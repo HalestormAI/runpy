@@ -1,6 +1,7 @@
 # RunPy -  Strava Analysis in Flask
 
-Reimagining of Currere to use Python (Flask) backend for pulling running stats
+Reimagining of Currere to use Python (Flask) backend for pulling running stats.
+
 To run:
 
   * Copy `config-example.json` to `config.json`, then add your Strava API keys to it
