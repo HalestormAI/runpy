@@ -1,0 +1,10 @@
+{
+  "strava": {
+    "client_id": "<FROM_STRAVA_API>",
+    "client_secret": "<FROM_STRAVA_API>",
+  },
+  "server": {
+    "config_file": "server_config",
+    "v1_api": "/api/v1"
+  }
+}
