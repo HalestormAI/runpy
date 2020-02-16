@@ -1,0 +1,6 @@
+progressbar
+flask
+flask-restful
+pandas
+maya
+-e git://@github.com:HalestormAI/stravaio.git#egg=stravaio

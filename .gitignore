@@ -130,3 +130,9 @@ dmypy.json
 
 # Jetbrains stuff
 .idea
+
+
+# Application specific ignores
+#   ... We don't want to include the actual config in the repo as this contains
+#   hidden keys. We'll commit an example one instead with these removed.
+config.json
