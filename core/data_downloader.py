@@ -1,8 +1,10 @@
-import os
-import progressbar
-import maya
-import stravaio
 import logging
+import os
+
+import maya
+import progressbar
+import stravaio
+
 from core.connection import StravaConnectedObject, Config
 
 logger = logging.getLogger()
@@ -97,6 +99,11 @@ class ActivityDownloader(StravaConnectedObject):
                 self.progress.next()
 
             self.progress.end()
+
+    def clear_data(self):
+        if '_last_download' in self.config['strava']:
+            del self.config['strava']['_last_download']
+            self.config.save()
 
 
 if __name__ == "__main__":
