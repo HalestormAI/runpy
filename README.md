@@ -8,6 +8,9 @@ To run:
   * Install requirements: `$ pip3 install -r requirements.txt`
   * Run the server `$ python3 activity_server.py`
 
+Once the server is running, go to the following in your browser:
+
+    http://127.0.0.1:5000/frontend/display.html
 
 ## TODO:
 ### README

@@ -1,0 +1,12 @@
+#spinner_cnt {
+    display: none;
+}
+
+#spinner_cnt.modal-active {
+    display: block;
+}
+
+.error {
+    border-color: red !important;
+    background-color: pink !important;
+}
