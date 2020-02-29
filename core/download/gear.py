@@ -1,6 +1,5 @@
 import progressbar
 import stravaio
-import stravaio.swagger_client
 
 import core.mongo
 from core.download.downloader import (
