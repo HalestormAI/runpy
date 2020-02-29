@@ -1,10 +1,15 @@
+import json
+import logging
+
+from bson import json_util
+
+import core.mongo
 from core.connection import StravaConnectedObject
+
 # import plotly.express as px
 #
 # import plotly.graph_objs as go
 # from ipywidgets import Output, VBox
-
-import logging
 logger = logging.getLogger()
 
 
@@ -34,8 +39,15 @@ class StatHandler(StravaConnectedObject):
         super().__init__(config)
         StatHandlers.register_handler(handler_name, self)
 
+    def mongo_client(self):
+        return core.mongo.factory.default_client()
+
     def get_activities(self, **kwargs):
         raise NotImplementedError("The get_activities method should be overriden")
+
+    @staticmethod
+    def parse_result(result):
+        return json.loads(json_util.dumps(result))
 
 
 class ActivitiesForDistance(StatHandler):
@@ -44,20 +56,17 @@ class ActivitiesForDistance(StatHandler):
         super().__init__("distance_range", config)
 
     def get_activities(self, lower_bound, upper_bound, type="Run", ignore_manual=True):
-        if self.client is None:
-            self.connect()
-
-        def valid_distance(activity):
-            distance = activity['distance']
-            correct_distance = lower_bound <= distance <= upper_bound
-
-            if ignore_manual:
-                correct_manual = activity['manual'] is False
-                return correct_distance and correct_manual
-            return correct_distance
-
-        activities = list(self.client.local_activities(self.athlete_id))
-        return [a for a in activities if valid_distance(a) and a['type'] == type]
+        db = self.mongo_client()
+        query = {
+            "distance": {
+                "$gte": lower_bound,
+                "$lte": upper_bound
+            },
+            "type": type
+        }
+        if ignore_manual:
+            query["manual"] = False
+        return StatHandler.parse_result(db.activities.find(query))
 
 
 class ActivitiesForMargin(StatHandler):
@@ -65,24 +74,22 @@ class ActivitiesForMargin(StatHandler):
     def __init__(self, config=None):
         super().__init__("distance_margin", config)
 
+    # TODO: Refactor this to reuse code w/ distance handler
     def get_activities(self, target_distance, margin=0.1, type="Run", ignore_manual=True):
-        if self.client is None:
-            self.connect()
+        lower_bound = target_distance - margin * target_distance
+        upper_bound = target_distance + margin * target_distance
 
-        def valid_distance(activity):
-            distance = activity['distance']
-            lower_bound = target_distance - margin * target_distance
-            upper_bound = target_distance + margin * target_distance
-
-            correct_distance = lower_bound <= distance <= upper_bound
-
-            if ignore_manual:
-                correct_manual = activity['manual'] is False
-                return correct_distance and correct_manual
-            return correct_distance
-
-        activities = list(self.client.local_activities(self.athlete_id))
-        return [a for a in activities if valid_distance(a) and a['type'] == type]
+        db = self.mongo_client()
+        query = {
+            "distance": {
+                "$gte": lower_bound,
+                "$lte": upper_bound
+            },
+            "type": type
+        }
+        if ignore_manual:
+            query["manual"] = False
+        return StatHandler.parse_result(db.activities.find(query))
 
 
 class ActivitiesForName(StatHandler):
@@ -91,13 +98,13 @@ class ActivitiesForName(StatHandler):
         super().__init__("name", config)
 
     def get_activities(self, name, type='Run', ignore_manual=True):
-        if self.client is None:
-            self.connect()
-
-        activities = list(self.client.local_activities(self.athlete_id))
-        # return activities
-        # logging.debug(activities[0])
-        return [a for a in activities if name.lower() in a['name'].lower() and a['type'] == type]
+        import re
+        db = self.mongo_client()
+        query = {
+            'name': re.compile('^' + name + '$', re.IGNORECASE),
+            "type": type
+        }
+        return StatHandler.parse_result(db.activities.find(query))
 
     #     activity_date_speeds = [(a['start_date_local'], a['average_speed'], a['name'], a['distance']/1000) for a in activities]
     #

@@ -3,4 +3,5 @@ flask
 flask-restful
 pandas
 maya
+pymongo
 -e git://@github.com:HalestormAI/stravaio.git#egg=stravaio

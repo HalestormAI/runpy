@@ -21,9 +21,12 @@ Once the server is running, go to the following in your browser:
  * Information on `stravaio` fork
 
 ### Server
+ * ~~Move from flat-file JSON to Mongo~~
  * More filters to use for searching database
- * Move from flat-file JSON to Mongo
- * Better download API with progress responses
+   * Gear
+   * Name
+   * Location (e.g. runs within radius of lat/long)
+ * Better download API with progress responses -> SocketIO / flask-socketio
  * Clean up commented code = mostly used for test histograms, needs to be removed in lieu of a frontend
  * Restructure scripts - currently not well organised
 

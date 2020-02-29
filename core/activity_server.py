@@ -1,6 +1,6 @@
 from flask import Flask
 
-from core.connection import Config
+from core.config import Config
 from resources import activity_search, activity_dl, frontend
 from running_stats import register_handlers
 

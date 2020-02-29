@@ -1,7 +1,9 @@
-import stravaio
 import logging
 import sys
-import json
+
+import stravaio
+
+from core.config import Config
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -14,46 +16,6 @@ logger.addHandler(handler)
 
 class AuthenticationError(Exception):
     pass
-
-
-class Config(object):
-
-    instance = None
-
-    def __init__(self, file_path):
-        self.path = file_path
-        self._data = self._load()
-
-    def _load(self):
-        with open(self.path, 'r') as fh:
-            return json.load(fh)
-
-    def save(self):
-        with open(self.path, 'w') as fh:
-            json.dump(self._data, fh, indent=2)
-
-    def get_token(self, force_reauth=False):
-        if not force_reauth:
-            try:
-                return self._data['strava']['_token']
-            except KeyError:
-                logger.info("Token not found in config. Refreshing.")
-
-        token = stravaio.strava_oauth2(client_id=self._data['strava']['client_id'],
-                                       client_secret=self._data['strava']['client_secret'])
-
-        self._data['strava']['_token'] = token
-        self.save()
-
-        return token
-
-    def __getitem__(self, item):
-        return self._data[item]
-
-    @staticmethod
-    def create_instance(file_path):
-        Config.instance = Config(file_path)
-        return Config.instance
 
 
 class StravaConnectedObject(object):

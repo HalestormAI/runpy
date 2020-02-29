@@ -1,10 +1,16 @@
 {
   "strava": {
     "client_id": "<FROM_STRAVA_API>",
-    "client_secret": "<FROM_STRAVA_API>",
+    "client_secret": "<FROM_STRAVA_API>"
   },
   "server": {
     "config_file": "server_config",
     "v1_api": "/api/v1"
+  },
+  "mongo": {
+    "host": "127.0.0.1",
+    "port": 27017,
+    "username": "<MONGO_USER>",
+    "password": "<MONGO_PASSWORD>"
   }
 }
