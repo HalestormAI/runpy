@@ -22,6 +22,8 @@ Once the server is running, go to the following in your browser:
 
 ### Server
  * ~~Move from flat-file JSON to Mongo~~
+ * Test gear download API
+ * Reformat search URIs to make agnostic to data type
  * More filters to use for searching database
    * Gear
    * Name
@@ -32,5 +34,6 @@ Once the server is running, go to the following in your browser:
 
 ### Frontend
  * Make a frontend....
- * Start with a static HTML5 page, use `fetch` api to query the server and send results to `plotly`
+ * Start with a ~~static HTML5 page, use `fetch` api to query the server~~ and send results to `plotly`
  * Move towards React?
+ * Handle dependencies using something like require.js - currently relying on manually ordering UI before runpy
