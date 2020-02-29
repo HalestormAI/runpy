@@ -4,19 +4,16 @@ from flask_restful import Resource
 
 from core.config import Config
 from core.connection import AuthenticationError
-from core.download.activities import ActivityDownloader
 from core.download.downloader import DownloaderFactory
 from core.download.gear import GearDownloader
 
 
-class ActivityDownload(Resource):
+class GearDownload(Resource):
 
     def get(self):
-        activity_downloader = DownloaderFactory.get(ActivityDownloader)
         gear_downloader = DownloaderFactory.get(GearDownloader)
         # TODO: Thread this
         try:
-            activity_downloader.download()
             gear_downloader.download()
             return {
                 "status": "done",
@@ -34,26 +31,8 @@ class ActivityDownload(Resource):
             }
 
 
-class CleanActivities(Resource):
-
-    def get(self):
-        try:
-            downloader = DownloaderFactory.get()
-            downloader.clear()
-            return {
-                "status": "done",
-                "message": "Done"
-            }
-        except Exception as err:
-            return {
-                "status": "error",
-                "message": f"Unknown error: {str(err)}"
-            }
-
-
 def blueprint(app):
     api_bp = Blueprint('download_api', __name__)
     api = Api(api_bp)
-    api.add_resource(ActivityDownload, '/data/fetch/activities')
-    api.add_resource(CleanActivities, '/data/clear/activities')
+    api.add_resource(GearDownload, 'data//fetch/gear')
     app.register_blueprint(api_bp, url_prefix=Config.instance["server"]["v1_api"])
