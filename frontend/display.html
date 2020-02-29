@@ -25,9 +25,11 @@
             </ul>
         </nav>
 
-        <div id="spinner_cnt">
+        <div id="spinner_cnt" class="modal">
             <img src="/frontend/images/ajax-loader.gif" alt="Loading...">
         </div>
+
+        <div id="error_cnt" class="modal error"></div>
 
         <section id="search">
             <form action="javascript:void(0);" class="pure-form" onsubmit="runpy.search(this)">
@@ -42,7 +44,7 @@
     </div>
     <div class="pure-u-1-5"></div>
 </div>
-</div>
+
 <script>
     class Modal {
         constructor(id_key) {
@@ -69,6 +71,7 @@
     class UI {
         constructor() {
             this.spinner = new Modal("spinner_cnt");
+            this.error_container = new Modal("error_cnt");
         }
 
         validate_form(fields_and_conditions) {
@@ -87,6 +90,17 @@
             }
             return all_passed;
         }
+
+        show_error(message) {
+            const cnt = this.error_container;
+            cnt.element.innerText = message;
+            cnt.show();
+            setTimeout(() => {
+                console.log("Hiding", cnt);
+                cnt.hide();
+            }, 3000)
+        }
+
     }
 
     class RunPy {
@@ -134,7 +148,12 @@
                 .then((response) => {
                     this.ui.spinner.hide();
                     return response.json()
-                })
+                }).then((response) => {
+                   if (response["status"] ===  "error") {
+                       this.ui.show_error(response["message"]);
+                   }
+                   return response;
+                });
         }
     }
 

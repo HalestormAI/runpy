@@ -1,8 +1,8 @@
-#spinner_cnt {
+.modal {
     display: none;
 }
 
-#spinner_cnt.modal-active {
+.modal.modal-active {
     display: block;
 }
 
