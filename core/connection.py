@@ -15,7 +15,7 @@ class StravaConnectedObject(object):
 
     def __init__(self, config=None):
         if config is None:
-            config = Config.instance
+            config = Config.get_instance()
         self.config = config
 
         self.client = None

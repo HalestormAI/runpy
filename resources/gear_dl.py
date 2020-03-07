@@ -35,4 +35,4 @@ def blueprint(app):
     api_bp = Blueprint('download_api', __name__)
     api = Api(api_bp)
     api.add_resource(GearDownload, 'data//fetch/gear')
-    app.register_blueprint(api_bp, url_prefix=Config.instance["server"]["v1_api"])
+    app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])

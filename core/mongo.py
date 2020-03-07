@@ -12,4 +12,4 @@ class MongoFactory:
         return MongoClient(**self.config["mongo"]).runpy
 
 
-factory = MongoFactory(Config.create_instance('config.json'))
+factory = MongoFactory(Config.get_instance())

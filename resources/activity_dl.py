@@ -56,4 +56,4 @@ def blueprint(app):
     api = Api(api_bp)
     api.add_resource(ActivityDownload, '/data/fetch/activities')
     api.add_resource(CleanActivities, '/data/clear/activities')
-    app.register_blueprint(api_bp, url_prefix=Config.instance["server"]["v1_api"])
+    app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])

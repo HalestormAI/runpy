@@ -41,4 +41,4 @@ def blueprint(app):
     api = Api(api_bp)
     api.add_resource(ActivitySearch, '/search/<string:search_type>/<int:lower_distance>/<int:upper_distance>', endpoint="distance")
     api.add_resource(ActivitySearch, '/search/<string:search_type>/<string:name>', endpoint="name")
-    app.register_blueprint(api_bp, url_prefix=Config.instance["server"]["v1_api"])
+    app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])

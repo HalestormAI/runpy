@@ -7,7 +7,8 @@ logger = logging.getLogger("runpy")
 
 
 class Config(object):
-    instance = None
+    __CONFIG_FILE_NAME = "config.json"
+    _instance = None
 
     def __init__(self, file_path):
         self.path = file_path
@@ -40,6 +41,7 @@ class Config(object):
         return self._data[item]
 
     @staticmethod
-    def create_instance(file_path):
-        Config.instance = Config(file_path)
-        return Config.instance
+    def get_instance():
+        if Config._instance is None:
+            Config._instance = Config(Config.__CONFIG_FILE_NAME)
+        return Config._instance
