@@ -13,27 +13,8 @@ Once the server is running, go to the following in your browser:
     http://127.0.0.1:5000/frontend/display.html
 
 ## TODO:
-### README
- * Add Strava API instructions
- * More detailed setup instructions
- * Description of config and server config
- * Explanation of what the app actually does
- * Information on `stravaio` fork
+The todo list has been moved to Trello to make it more manageable:
 
-### Server
- * ~~Move from flat-file JSON to Mongo~~
- * Test gear download API
- * Reformat search URIs to make agnostic to data type
- * More filters to use for searching database
-   * Gear
-   * Name
-   * Location (e.g. runs within radius of lat/long)
- * Better download API with progress responses -> SocketIO / flask-socketio
- * Clean up commented code = mostly used for test histograms, needs to be removed in lieu of a frontend
- * Restructure scripts - currently not well organised
+https://trello.com/b/4yFRn4aS/runpy
 
-### Frontend
- * Make a frontend....
- * Start with a ~~static HTML5 page, use `fetch` api to query the server~~ and send results to `plotly`
- * Move towards React?
- * Handle dependencies using something like require.js - currently relying on manually ordering UI before runpy
+__The board is public, but it looks lie GitHub integration might not work for the public...__ 
