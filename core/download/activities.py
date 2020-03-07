@@ -43,7 +43,7 @@ class ActivityDownloader(AbstractDownloader):
             if not ActivityModel.exists(db.activities, a.id):
                 self.progress.log(f"Storing activity {a.id} in database")
                 activity = self.client.get_activity_by_id(a.id)
-                download_buffer.add(activity)
+                download_buffer.add(activity.to_dict())
             self.progress.next()
 
         if len(download_buffer) > 0:

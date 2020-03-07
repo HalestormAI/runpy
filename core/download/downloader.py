@@ -67,7 +67,7 @@ class DownloadBuffer(object):
         self.buffer = []
 
     def add(self, item):
-        self.buffer.append(item.to_dict())
+        self.buffer.append(item)
         if len(self.buffer) > self.buffer_len:
             self.flush()
 

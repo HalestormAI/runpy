@@ -11,7 +11,7 @@ from core.download.downloader import (
 class GearDownloader(AbstractDownloader):
     def __init__(self, config):
         super().__init__(config)
-        self.api = stravaio.swagger_client.GearsApi()
+        self.api = None
 
     def download(self):
         if self.progress.running:
@@ -30,8 +30,6 @@ class GearDownloader(AbstractDownloader):
         stored_gear_ids = list(db.gear.distinct("id"))
 
         ids_to_download = [a for a in activity_gear_ids if a not in stored_gear_ids]
-        print(f"Downloading gear with the following ids: {ids_to_download}")
-
         for g in progressbar.progressbar(ids_to_download):
             api_response = self.api.get_gear_by_id(g)
             d = api_response.to_dict()
@@ -40,6 +38,11 @@ class GearDownloader(AbstractDownloader):
 
         if len(download_buffer) > 0:
             download_buffer.flush()
+
+    def connect_if_required(self):
+        super().connect_if_required()
+        if self.api is None:
+            self.api = stravaio.swagger_client.GearsApi(self.client._api_client)
 
     def clear(self):
         pass
