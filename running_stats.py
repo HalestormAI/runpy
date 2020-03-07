@@ -10,7 +10,7 @@ from core.connection import StravaConnectedObject
 #
 # import plotly.graph_objs as go
 # from ipywidgets import Output, VBox
-logger = logging.getLogger()
+logger = logging.getLogger("runpy")
 
 
 class StatHandlers(object):

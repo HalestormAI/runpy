@@ -10,7 +10,7 @@ from core.download.downloader import (
 )
 from models.activity_model import ActivityModel
 
-logger = logging.getLogger()
+logger = logging.getLogger("runpy")
 
 
 class ActivityDownloader(AbstractDownloader):
