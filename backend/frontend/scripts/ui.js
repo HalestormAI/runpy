@@ -47,10 +47,10 @@ class UI {
         const cnt = this.error_container;
         cnt.element.innerText = message;
         cnt.show();
-        setTimeout(() => {
-            console.log("Hiding", cnt);
-            cnt.hide();
-        }, 3000)
+        // setTimeout(() => {
+        //     console.log("Hiding", cnt);
+        //     cnt.hide();
+        // }, 3000)
     }
 
 }

@@ -13,6 +13,7 @@ class RunPy {
 
     search(form_elem) {
         console.log(form_elem);
+        this.ui.error_container.hide()
 
         const validate_number = elem => Boolean(elem.value);
         const form_validation = {
