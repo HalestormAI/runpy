@@ -17,4 +17,4 @@ The todo list has been moved to Trello to make it more manageable:
 
 https://trello.com/b/4yFRn4aS/runpy
 
-__The board is public, but it looks lie GitHub integration might not work for the public...__ 
+__The board is public, but it looks like GitHub integration might not work for the public...__ 
