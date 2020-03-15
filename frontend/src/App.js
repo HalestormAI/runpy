@@ -1,14 +1,28 @@
 import React from 'react';
-import Navbar from './components/ui/nav/navbar';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import './App.css';
+import Navbar from "./components/ui/nav/navbar";
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 function App() {
-  return (
-    <div className="App">
-        <Navbar/>
-     My things
-    </div>
-  );
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const theme = React.useMemo(
+        () =>
+            createMuiTheme({
+                palette: {
+                    type: prefersDarkMode ? "dark"  : "light",
+                },
+            }),
+        [prefersDarkMode]
+    );
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Navbar/>
+        </ThemeProvider>
+    );
 }
 
 export default App;
