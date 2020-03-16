@@ -2,8 +2,11 @@ import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import './App.css';
-import Navbar from "./components/ui/nav/navbar";
+import Navbar from "./components/ui/nav";
 import CssBaseline from '@material-ui/core/CssBaseline';
+import StravaSearchComponent from "./components/search";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 
 function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -11,7 +14,7 @@ function App() {
         () =>
             createMuiTheme({
                 palette: {
-                    type: prefersDarkMode ? "dark"  : "light",
+                    type: prefersDarkMode ? "dark" : "light",
                 },
             }),
         [prefersDarkMode]
@@ -19,8 +22,17 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Navbar/>
+            <CssBaseline/>
+            <Container maxWidth="lg">
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Navbar/>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <StravaSearchComponent/>
+                    </Grid>
+                </Grid>
+            </Container>
         </ThemeProvider>
     );
 }
