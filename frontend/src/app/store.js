@@ -1,10 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import {configureStore} from '@reduxjs/toolkit';
 import apiReducer from '../components/ui/nav/DataButtons/dataSlice';
+import searchApiReducer from '../components/search/searchApiSlice';
+import searchFormReducer from '../components/search/searchUiSlice';
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
-    api: apiReducer
+    api: apiReducer,
+    searchApi: searchApiReducer,
+    searchForm: searchFormReducer
   },
 });
