@@ -7,7 +7,7 @@ logger = logging.getLogger("runpy")
 
 
 class Config(object):
-    __CONFIG_FILE_NAME = "config.json"
+    __CONFIG_FILE_NAME = "backend/config.json"
     _instance = None
 
     def __init__(self, file_path):

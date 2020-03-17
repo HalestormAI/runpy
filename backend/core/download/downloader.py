@@ -8,7 +8,7 @@ class DownloaderFactory():
     @staticmethod
     def get(cls):
         if cls not in DownloaderFactory.downloaders:
-            config = Config('config.json')
+            config = Config.get_instance()
             DownloaderFactory.downloaders[cls] = cls(config)
         return DownloaderFactory.downloaders[cls]
 
