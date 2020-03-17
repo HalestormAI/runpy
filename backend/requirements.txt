@@ -1,6 +1,7 @@
 progressbar
 flask
 flask-restful
+flask-cors
 pandas
 maya
 pymongo
