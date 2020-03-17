@@ -5,7 +5,11 @@ export const slice = createSlice({
     name: 'apiData',
     initialState: {
         response: null,
-        errorMessage: null,
+        status: {
+            show: false,
+            type: null,
+            message: ""
+        },
         waiting: false
     },
     reducers: {
@@ -17,14 +21,19 @@ export const slice = createSlice({
         },
         apiSuccess: (state, action) => {
             state.response = action.payload;
-            state.errorMessage = null;
+            state.status.message = "Success!";
+            state.status.type = "success";
+            state.status.show = true;
         },
         apiError: (state, action) => {
             state.waiting = false;
-            state.errorMessage = action.payload.message;
+            state.status.message = action.payload.message;
+            state.status.type = "error";
+            state.status.show = true;
         },
         apiClearError: state => {
-            state.errorMessage = null;
+            state.status.show = false;
+            state.status.message = null;
         }
     }
 });
@@ -33,9 +42,9 @@ export const {apiFetch, apiDone, apiError, apiSuccess, apiClearError} = slice.ac
 
 export const apiCall = apiUri => dispatch => {
     dispatch(apiFetch());
-    call(dispatch, apiUri, apiDone, apiFetch, apiSuccess, apiError)
+    call(dispatch, apiUri, apiDone, apiSuccess, apiError)
 };
 
 export default slice.reducer;
 export const selectApiWaiting = state => state.api.waiting;
-export const selectApiErrorMessage = state => state.api.errorMessage;
+export const selectStatus = state => state.api.status;
