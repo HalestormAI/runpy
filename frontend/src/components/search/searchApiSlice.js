@@ -38,7 +38,7 @@ export const slice = createSlice({
         },
         searchSuccess: (state, action) => {
             // TODO: Parse out the JSON and store into the state
-            console.log(action.payload);
+            state.activities = action.payload.activities;
             state.data.errorMessage = null;
         },
         searchError: (state, action) => {
@@ -63,3 +63,4 @@ export const performSearch = () => (dispatch, getState) => {
 
 export default slice.reducer;
 export const selectApiState = state => state.searchApi.data;
+export const selectActivities = state => state.searchApi.activities;

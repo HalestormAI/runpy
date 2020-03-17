@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import StravaSearchComponent from "./components/search";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
+import SearchResultTableComponent from "./components/resultTable";
 
 function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -30,6 +31,9 @@ function App() {
                     </Grid>
                     <Grid item xs={12}>
                         <StravaSearchComponent/>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <SearchResultTableComponent/>
                     </Grid>
                 </Grid>
             </Container>
