@@ -8,6 +8,11 @@ import StravaSearchComponent from "./components/search";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import SearchResultTableComponent from "./components/resultTable";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import {TabContainer, TabPanel} from "./components/ui/tabs";
+import {useSelector} from "react-redux";
+import {selectActivities} from "./components/search/searchApiSlice";
 
 function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -21,6 +26,7 @@ function App() {
         [prefersDarkMode]
     );
 
+    let activities = useSelector(selectActivities);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -32,9 +38,11 @@ function App() {
                     <Grid item xs={12}>
                         <StravaSearchComponent/>
                     </Grid>
+                {activities.length > 0 && (
                     <Grid item xs={12}>
-                        <SearchResultTableComponent/>
+                        <TabContainer/>
                     </Grid>
+                )}
                 </Grid>
             </Container>
         </ThemeProvider>

@@ -82,61 +82,59 @@ export default function SearchResultTableComponent() {
 
     return (
         <React.Fragment>
-            {activities.length > 0 && (
-                <Paper>
-                    <TableContainer component={Paper}>
-                        <Table aria-label="simple table">
-                            <colgroup>
-                                <col style={{width: '5%'}}/>
-                                <col style={{width: '10%'}}/>
-                                <col style={{width: '45%'}}/>
-                                <col style={{width: '10%'}}/>
-                                <col style={{width: '10%'}}/>
-                                <col style={{width: '10%'}}/>
-                            </colgroup>
-                            <EnhancedTableHead
-                                headCells={headCells}
-                                order={tableState.ordering.order}
-                                orderBy={tableState.ordering.orderBy}
-                                onRequestSort={handleRequestSort}
-                            />
+            <Paper>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <colgroup>
+                            <col style={{width: '5%'}}/>
+                            <col style={{width: '10%'}}/>
+                            <col style={{width: '45%'}}/>
+                            <col style={{width: '10%'}}/>
+                            <col style={{width: '10%'}}/>
+                            <col style={{width: '10%'}}/>
+                        </colgroup>
+                        <EnhancedTableHead
+                            headCells={headCells}
+                            order={tableState.ordering.order}
+                            orderBy={tableState.ordering.orderBy}
+                            onRequestSort={handleRequestSort}
+                        />
 
-                            <TableBody>
-                                {stableSort(activities, getComparator(tableState.ordering.order, tableState.ordering.orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row, index) => (
-                                        <TableRow key={`${row.name}_${index}`}>
-                                            <TableCell align="left">{row.type}</TableCell>
-                                            <TableCell align="left">
-                                                {new Date(row.start_date).toLocaleDateString(config.locale)}
-                                            </TableCell>
-                                            <TableCell component="th" scope="row">
-                                                <a href={stravaUrl(row.id)}>{row.name}</a>
-                                            </TableCell>
-                                            <TableCell align="right">{(row.distance / 1000).toFixed(2)}</TableCell>
-                                            <TableCell align="right">{row.total_elevation_gain}</TableCell>
-                                            <TableCell align="right">{secondsToHMS(row.moving_time)}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{height: 53 * emptyRows}}>
-                                        <TableCell colSpan={6}/>
+                        <TableBody>
+                            {stableSort(activities, getComparator(tableState.ordering.order, tableState.ordering.orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => (
+                                    <TableRow key={`${row.name}_${index}`}>
+                                        <TableCell align="left">{row.type}</TableCell>
+                                        <TableCell align="left">
+                                            {new Date(row.start_date).toLocaleDateString(config.locale)}
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            <a href={stravaUrl(row.id)}>{row.name}</a>
+                                        </TableCell>
+                                        <TableCell align="right">{(row.distance / 1000).toFixed(2)}</TableCell>
+                                        <TableCell align="right">{row.total_elevation_gain}</TableCell>
+                                        <TableCell align="right">{secondsToHMS(row.moving_time)}</TableCell>
                                     </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, 50, 100]}
-                        component="div"
-                        count={activities.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
-                </Paper>
-            )}
+                                ))}
+                            {emptyRows > 0 && (
+                                <TableRow style={{height: 53 * emptyRows}}>
+                                    <TableCell colSpan={6}/>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                    component="div"
+                    count={activities.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+            </Paper>
         </React.Fragment>
     )
 }
