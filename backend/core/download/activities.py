@@ -31,8 +31,11 @@ class ActivityDownloader(AbstractDownloader):
 
         # stravaio only supports run or ride at the moment: TODO: Update in fork
         last_download = self.config['strava'].get('_last_download', 0)
+
         activity_ids = self.client.get_logged_in_athlete_activities(after=last_download)
         activity_ids = [a for a in activity_ids if a.type in ['Run', 'Ride']]
+        activity_ids = [a for a in activity_ids if not ActivityModel.exists(db.activities, a.id)]
+
         self.progress.set_num(len(activity_ids))
         self.progress.start()
 
@@ -41,11 +44,10 @@ class ActivityDownloader(AbstractDownloader):
         downloaded_activities = []
         for a in progressbar.progressbar(activity_ids):
             self.progress.log(f"Downloading activity {a.id}")
-            if not ActivityModel.exists(db.activities, a.id):
-                self.progress.log(f"Storing activity {a.id} in database")
-                activity = self.client.get_activity_by_id(a.id)
-                download_buffer.add(activity.to_dict())
-                downloaded_activities.append(activity)
+            self.progress.log(f"Storing activity {a.id} in database")
+            activity = self.client.get_activity_by_id(a.id)
+            download_buffer.add(activity.to_dict())
+            downloaded_activities.append(activity.to_dict())
             self.progress.next()
 
         if len(download_buffer) > 0:
