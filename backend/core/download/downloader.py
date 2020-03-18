@@ -1,5 +1,5 @@
-from core.config import Config
-from core.connection import StravaConnectedObject
+from ..config import Config
+from ..connection import StravaConnectedObject
 
 
 class DownloaderFactory():

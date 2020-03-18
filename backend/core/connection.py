@@ -2,7 +2,7 @@ import logging
 
 import stravaio
 
-from core.config import Config
+from .config import Config
 
 logger = logging.getLogger("runpy")
 

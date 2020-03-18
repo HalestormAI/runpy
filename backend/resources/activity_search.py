@@ -2,8 +2,8 @@ from flask import Blueprint
 from flask_restful import Api
 from flask_restful import Resource
 
-from core.config import Config
-from running_stats import StatHandlers
+from ..core.config import Config
+from ..core.running_stats import StatHandlers
 
 
 class ActivitySearch(Resource):

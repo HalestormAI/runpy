@@ -2,11 +2,11 @@ from flask import Blueprint
 from flask_restful import Api
 from flask_restful import Resource
 
-from core.config import Config
-from core.connection import AuthenticationError
-from core.download.activities import ActivityDownloader
-from core.download.downloader import DownloaderFactory
-from core.download.gear import GearDownloader
+from ..core.config import Config
+from ..core.connection import AuthenticationError
+from ..core.download.activities import ActivityDownloader
+from ..core.download.downloader import DownloaderFactory
+from ..core.download.gear import GearDownloader
 
 
 class ActivityDownload(Resource):

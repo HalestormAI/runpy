@@ -5,8 +5,8 @@ Reimagining of Currere to use Python (Flask) backend for pulling running stats.
 To run:
 
   * Copy `config-example.json` to `config.json`, then add your Strava API keys to it
-  * Install requirements: `$ pip3 install -r requirements.txt`
-  * Run the server `$ python3 activity_server.py`
+  * Install requirements: `$ pip3 install -r backend/requirements.txt`
+  * Run the server `$ python3 -m backend`
 
 Once the server is running, go to the following in your browser:
 

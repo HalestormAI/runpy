@@ -1,8 +1,8 @@
 import progressbar
 import stravaio
 
-import core.mongo
-from core.download.downloader import (
+from .. import mongo
+from .downloader import (
     AbstractDownloader,
     DownloadBuffer
 )
@@ -23,7 +23,7 @@ class GearDownloader(AbstractDownloader):
         download_buffer = DownloadBuffer(self.config["server"]["max_download_buffer"], buffer_cb)
 
         self.connect_if_required()
-        db = core.mongo.factory.default_client()
+        db = mongo.factory.default_client()
 
         # Get unique gear IDs from activities db
         activity_gear_ids = db.activities.distinct("gear.id")

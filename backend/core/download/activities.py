@@ -3,12 +3,12 @@ import logging
 import maya
 import progressbar
 
-import core.mongo
-from core.download.downloader import (
+from .. import mongo
+from .downloader import (
     AbstractDownloader,
     DownloadBuffer
 )
-from models.activity_model import ActivityModel
+from ...models.activity_model import ActivityModel
 
 logger = logging.getLogger("runpy")
 
@@ -22,7 +22,7 @@ class ActivityDownloader(AbstractDownloader):
             return
 
         self.connect_if_required()
-        db = core.mongo.factory.default_client()
+        db = mongo.factory.default_client()
 
         def buffer_cb(activities):
             return db.activities.insert_many(activities)
@@ -59,5 +59,5 @@ class ActivityDownloader(AbstractDownloader):
         if '_last_download' in self.config['strava']:
             del self.config['strava']['_last_download']
             self.config.save()
-        db = core.mongo.factory.default_client()
+        db = mongo.factory.default_client()
         db.activities.remove({})

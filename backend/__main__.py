@@ -1,11 +1,11 @@
 import logging
 import sys
-
-from core.config import Config
 from flask import Flask
 from flask_cors import CORS
-from resources import activity_search, activity_dl, frontend
-from running_stats import register_handlers
+
+from .core.config import Config
+from .resources import activity_search, activity_dl, frontend
+from .core.running_stats import register_handlers
 
 logger = logging.getLogger("runpy")
 config = Config.get_instance()
@@ -24,7 +24,7 @@ def create_app(config_filename):
     app = Flask(__name__)
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
-    app.config.from_object(config_filename)
+    app.config.from_pyfile(config_filename)
 
     activity_search.blueprint(app)
     activity_dl.blueprint(app)

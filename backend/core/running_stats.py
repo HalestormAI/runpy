@@ -3,8 +3,8 @@ import logging
 
 from bson import json_util
 
-import core.mongo
-from core.connection import StravaConnectedObject
+from . import mongo
+from .connection import StravaConnectedObject
 
 # import plotly.express as px
 #
@@ -40,7 +40,7 @@ class StatHandler(StravaConnectedObject):
         StatHandlers.register_handler(handler_name, self)
 
     def mongo_client(self):
-        return core.mongo.factory.default_client()
+        return mongo.factory.default_client()
 
     def get_activities(self, **kwargs):
         raise NotImplementedError("The get_activities method should be overriden")
