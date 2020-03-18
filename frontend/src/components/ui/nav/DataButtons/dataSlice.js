@@ -8,7 +8,8 @@ export const slice = createSlice({
         status: {
             show: false,
             type: null,
-            message: ""
+            message: "",
+            downloaded_items: {}
         },
         waiting: false
     },
@@ -22,6 +23,7 @@ export const slice = createSlice({
         apiSuccess: (state, action) => {
             state.response = action.payload;
             state.status.message = "Success!";
+            state.status.downloaded_items = action.payload.hasOwnProperty("downloaded") ? action.payload.downloaded : [];
             state.status.type = "success";
             state.status.show = true;
         },
@@ -31,14 +33,15 @@ export const slice = createSlice({
             state.status.type = "error";
             state.status.show = true;
         },
-        apiClearError: state => {
+        apiClearState: state => {
             state.status.show = false;
             state.status.message = null;
+            state.status.downloaded_items = []
         }
     }
 });
 
-export const {apiFetch, apiDone, apiError, apiSuccess, apiClearError} = slice.actions;
+export const {apiFetch, apiDone, apiError, apiSuccess, apiClearState} = slice.actions;
 
 export const apiCall = apiUri => dispatch => {
     dispatch(apiFetch());

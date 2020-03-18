@@ -7,17 +7,15 @@ async function call(dispatch, url_suffix, done_cb, success_cb, error_cb) {
         dispatch(done_cb());
 
         const response = await rawResponse.json();
-        console.log(response);
+
         if (response["status"] === "error") {
             console.log("Status was an error");
             dispatch(error_cb(response));
             return;
         }
 
-        console.log("Dispatching");
         dispatch(success_cb(response));
     } catch (error) {
-        console.log(error);
         dispatch(error_cb({
             message: error.toString()
         }));
