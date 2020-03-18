@@ -6,7 +6,6 @@ import React from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import SearchResultTableComponent from "../resultTable";
-import Grid from "@material-ui/core/Grid";
 
 export function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -47,7 +46,7 @@ export function TabContainer(props) {
         <React.Fragment>
             <Tabs value={tabId} onChange={handleChange} aria-label="simple tabs example">
                 <Tab label="Table" {...a11yProps(0)} />
-                <Tab label="Item Two" {...a11yProps(1)} />
+                <Tab label="Plots" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={tabId} index={0}>
                 <SearchResultTableComponent/>

@@ -6,5 +6,5 @@ export function secondsToHMS(seconds) {
 
     // We know there will never be negative numbers here... If there are it'll look bad.
     const pad = n => n.toString().padStart(2, "0");
-    return `${pad(h)}:${pad(m)}:${pad(s)}`
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
