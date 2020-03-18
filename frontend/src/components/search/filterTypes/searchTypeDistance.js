@@ -15,7 +15,7 @@ export default function DistanceSearchFields() {
 
     return (
         <React.Fragment>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
                 <TextField
                     id="distance-low"
                     label="Distance Low"
@@ -27,7 +27,7 @@ export default function DistanceSearchFields() {
                     onChange={e => updateSearchField(e, updateLow)}
                 />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
                 <TextField
                     id="distance-high"
                     label="Distance High"

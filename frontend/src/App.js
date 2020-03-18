@@ -24,7 +24,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <Container maxWidth="lg">
+            <Container maxWidth="xl">
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Navbar/>

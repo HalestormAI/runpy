@@ -44,13 +44,13 @@ export default function StravaSearchComponent() {
     return (
         <form onSubmit={handleSubmit} autoComplete="off">
             <Grid container spacing={3}>
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                     Search:
                 </Grid>
                 {formState.type === "distance" &&
                 <DistanceSearchFields/>
                 }
-                <Grid item xs={2} className={classes.root}>
+                <Grid item xs={1} className={classes.root}>
                     <div className={classes.wrapper}>
                         <Button
                             variant="contained"
