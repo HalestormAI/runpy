@@ -7,10 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import StravaSearchComponent from "./components/search";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import SearchResultTableComponent from "./components/resultTable";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import {TabContainer, TabPanel} from "./components/ui/tabs";
+import {TabContainer} from "./components/ui/tabs";
 import {useSelector} from "react-redux";
 import {selectActivities} from "./components/search/searchApiSlice";
 
