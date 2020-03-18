@@ -6,8 +6,8 @@ export const slice = createSlice({
     initialState: {
         type: "distance",
         values: {
-            "low": "",
-            "high": ""
+            low: "",
+            high: ""
         }
     },
     reducers: {

@@ -8,7 +8,7 @@ import {performSearch, selectApiState} from "./searchApiSlice";
 import DistanceSearchFields from "./filterTypes/searchTypeDistance";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { grey } from '@material-ui/core/colors';
+import {grey} from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,11 +34,30 @@ export default function StravaSearchComponent() {
     const formState = useSelector(selectFormState);
     const apiState = useSelector(selectApiState);
 
+    const [validState, setValidState] = React.useState({});
+    const formIsValid = () => Object.values(validState).reduce((isValid, fieldValid) => isValid && fieldValid, true);
+
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(performSearch());
+        if (formIsValid()) {
+            dispatch(performSearch());
+        }
+
         return false;
     };
+
+    // TODO: This is pretty hairy, probably needs rethinking...
+    const registerValidationFields = (names) => {
+        setValidState(names.reduce((nameValid, name) => ({
+            ...nameValid,
+            [name]: false
+        }), validState));
+    };
+
+    const updateFieldValidation = (name, isValid) => {
+        setValidState({...validState, [name]: isValid});
+    };
+
     const classes = useStyles();
 
     return (
@@ -48,7 +67,8 @@ export default function StravaSearchComponent() {
                     Search:
                 </Grid>
                 {formState.type === "distance" &&
-                <DistanceSearchFields/>
+                <DistanceSearchFields registerValidationFields={registerValidationFields}
+                                      updateValidationState={updateFieldValidation}/>
                 }
                 <Grid item xs={1} className={classes.root}>
                     <div className={classes.wrapper}>
