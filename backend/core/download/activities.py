@@ -38,12 +38,14 @@ class ActivityDownloader(AbstractDownloader):
 
         # Run through all activity IDs, check if we've already stored them. If not, pull the summary and store
         # TODO: What about updating after edits?
+        downloaded_activities = []
         for a in progressbar.progressbar(activity_ids):
             self.progress.log(f"Downloading activity {a.id}")
             if not ActivityModel.exists(db.activities, a.id):
                 self.progress.log(f"Storing activity {a.id} in database")
                 activity = self.client.get_activity_by_id(a.id)
                 download_buffer.add(activity.to_dict())
+                downloaded_activities.append(activity)
             self.progress.next()
 
         if len(download_buffer) > 0:
@@ -54,6 +56,7 @@ class ActivityDownloader(AbstractDownloader):
         # Update the config last download date
         self.config['strava']['_last_download'] = str(maya.now())
         self.config.save()
+        return downloaded_activities
 
     def clear(self):
         if '_last_download' in self.config['strava']:

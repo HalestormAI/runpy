@@ -30,14 +30,18 @@ class GearDownloader(AbstractDownloader):
         stored_gear_ids = list(db.gear.distinct("id"))
 
         ids_to_download = [a for a in activity_gear_ids if a not in stored_gear_ids]
+        downloaded_gear = []
         for g in progressbar.progressbar(ids_to_download):
             api_response = self.api.get_gear_by_id(g)
             d = api_response.to_dict()
             d = stravaio.convert_datetime_to_iso8601(d)
             download_buffer.add(d)
+            downloaded_gear.append(g)
 
         if len(download_buffer) > 0:
             download_buffer.flush()
+
+        return downloaded_gear
 
     def connect_if_required(self):
         super().connect_if_required()

@@ -16,11 +16,15 @@ class ActivityDownload(Resource):
         gear_downloader = DownloaderFactory.get(GearDownloader)
         # TODO: Thread this
         try:
-            activity_downloader.download()
-            gear_downloader.download()
+            activities = activity_downloader.download()
+            gear = gear_downloader.download()
             return {
                 "status": "done",
-                "message": "Done"
+                "message": "Done",
+                "downloaded": {
+                    "activities": activities,
+                    "gear": gear
+                }
             }
         except AuthenticationError as err:
             return {
