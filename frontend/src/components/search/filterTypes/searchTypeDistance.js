@@ -19,11 +19,10 @@ export default function DistanceSearchFields(props) {
 
     const isValid = v => {
         v = Number(v);
-        const valid = !isNaN(v) && v > 0;
-        return valid;
+        return !isNaN(v) && v > 0;
     };
 
-    const [validState, setValidState] = React.useState({low: false, high: false});
+    const [validState, setValidState] = React.useState({low: true, high: true});
     const [registeredState, setRegisteredState] = React.useState(false);
 
     useEffect(() => {
@@ -47,6 +46,7 @@ export default function DistanceSearchFields(props) {
                     value={formState.values.low}
                     error={!validState.low}
                     required
+                    onBlur={e => updateSearchField(e, "low", updateLow)}
                     onChange={e => updateSearchField(e, "low", updateLow)}
                 />
             </Grid>
@@ -58,8 +58,10 @@ export default function DistanceSearchFields(props) {
                     InputLabelProps={{
                         shrink: true,
                     }}
+                    value={formState.values.high}
                     required
                     error={!validState.high}
+                    onBlur={e => updateSearchField(e, "high", updateHigh)}
                     onChange={e => updateSearchField(e, "high", updateHigh)}
                 />
             </Grid>
