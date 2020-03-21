@@ -12,36 +12,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import EnhancedTableHead from "./enhancedTableHead";
 import config from "../../app/config/config";
 import {secondsToHMS, speedToPaceMS} from "../../utils/ui";
-import moment from "moment";
-
-function descendingComparator(a, b, orderBy) {
-    a = moment.isDate(a) ? new Date(a) : a;
-    b = moment.isDate(b) ? new Date(b) : b;
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map(el => el[0]);
-}
-
+import {getComparator, stableSort} from "../../utils/sort"
 
 export default function SearchResultTableComponent() {
     let activities = useSelector(selectActivities);
