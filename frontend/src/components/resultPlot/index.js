@@ -13,10 +13,10 @@ function distanceFormat(distance) {
 }
 
 function createData(activities) {
-    const workoutTypes = ["Run", "Race"];
+    const workoutTypes = ["Run", "Race", "Long Run", "Workout"];
     const sorted = stableSort(activities, getComparator("asc", "start_date"));
-    const raceGroups = activities
-        .map(a => a.workout_type === null ? 0 : a.workout_type)
+    const raceGroups = sorted
+        .map(a => (a.workout_type === null || a.workout_type === undefined) ? 0 : a.workout_type)
         .map(a => workoutTypes[a]);
 
     const dateFormat = dateStr => new Date(dateStr).toLocaleDateString(config.locale);
