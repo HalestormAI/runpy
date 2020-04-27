@@ -6,6 +6,7 @@ import {getComparator, stableSort} from "../../utils/sort"
 import {speedToPaceMS} from "../../utils/ui";
 import config from "../../app/config/config";
 import {selectFormState} from "../search/searchUiSlice";
+import {useTheme} from '@material-ui/core/styles';
 
 function distanceFormat(distance) {
     return (distance / 1000).toFixed(2);
@@ -37,37 +38,53 @@ function createData(activities) {
 export default function SearchResultPlotComponent() {
     const searchState = useSelector(selectFormState);
     const activities = useSelector(selectActivities);
+    const theme = useTheme();
 
-    const plotGridColor = "#333333";
-    const plotBackgroundColor = "#292929";
-    const [state, setState] = useState({
-            layout: {
+    const layoutMemo = React.useMemo(
+        () => {
+            return ({
                 autosize: true,
                 responsize: true,
                 yaxis: {
-                    gridcolor: plotGridColor,
-                    zerolinecolor: plotGridColor,
-                    linecolor: plotGridColor,
+                    gridcolor: theme.palette.background.default,
+                    zerolinecolor: theme.palette.background.default,
+                    linecolor: theme.palette.background.default,
                     tickformat: "%M:%S"
                 },
                 xaxis: {
-                    gridcolor: plotGridColor,
-                    zerolinecolor: plotGridColor,
-                    linecolor: plotGridColor,
+                    gridcolor: theme.palette.background.default,
+                    zerolinecolor: theme.palette.background.default,
+                    linecolor: theme.palette.background.default,
                     tickformat: "%Y-%m-%d"
                 },
-                plot_bgcolor: plotBackgroundColor,
-                paper_bgcolor: plotBackgroundColor
-            },
-            frames: [],
-            config: {}
-        }
+                plot_bgcolor: theme.palette.background.paper,
+                paper_bgcolor: theme.palette.background.paper,
+                title: `Pace (mins/km) over time ${distanceFormat(searchState.values.low)}km ... ${distanceFormat(searchState.values.high)}km`,
+                font: {
+                    color: theme.palette.text.primary
+                }
+            })
+        }, [theme.palette, searchState.values]
     );
 
-    const getLayoutWithTitle = (v) => ({
-        ...state.layout,
-        title: `Pace (mins/km) over time ${distanceFormat(v.low)}km ... ${distanceFormat(v.high)}km`
-    });
+    const initialState = {
+        layout: {...layoutMemo},
+        frames: [],
+        config: {}
+    };
+
+    const [state, setState] = useState(initialState);
+
+    const wouldUpdate = (fig) => {
+        state.layout = {
+            ...fig.layout,
+            ...layoutMemo,
+        };
+        state.config = {...fig.config};
+        state.frames = {...fig.frames};
+        setState(state);
+        console.log("Setting state: ", state);
+    };
 
     return (
         <div style={{width: '100%'}}>
@@ -75,14 +92,10 @@ export default function SearchResultPlotComponent() {
                 useResizeHandler
                 style={{height: '100%', width: '100%'}}
                 data={[createData(activities)]}
-                layout={getLayoutWithTitle(searchState.values)}
-                frames={state.frames}
-                config={state.config}
+                layout={state.layout}
                 onInitialized={(figure) => setState(figure)}
-                // TODO: Uncommenting the below creates a render loop but the docs suggest this is done.
-                // Need to work out what I've done wrong.
-                // onUpdate={(figure) => setState(figure)}
+                onUpdate={(figure) => wouldUpdate(figure)}
             />
         </div>
     );
-}
+};

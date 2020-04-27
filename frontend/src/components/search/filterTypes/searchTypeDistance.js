@@ -30,7 +30,7 @@ export default function DistanceSearchFields(props) {
             registerValidationFields(["low", "high"]);
             setRegisteredState(true);
         }
-    });
+    }, [registeredState, registerValidationFields]);
 
 
     return (

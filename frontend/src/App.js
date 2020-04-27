@@ -8,11 +8,20 @@ import StravaSearchComponent from "./components/search";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import {TabContainer} from "./components/ui/tabs";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectActivities} from "./components/search/searchApiSlice";
+import {selectDarkMode, selectDmMediaQueryState, updateMediaQueryState} from "./components/ui/themeSlice";
 
 function App() {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const prefersDarkMode = useSelector(selectDarkMode);
+    const mqDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const dispatch = useDispatch();
+
+    const currentMediaQueryResult = useSelector(selectDmMediaQueryState);
+    if (currentMediaQueryResult !== mqDarkMode) {
+        dispatch(updateMediaQueryState(mqDarkMode));
+    }
+
     const theme = React.useMemo(
         () =>
             createMuiTheme({
@@ -23,7 +32,7 @@ function App() {
         [prefersDarkMode]
     );
 
-    let activities = useSelector(selectActivities);
+    const activities = useSelector(selectActivities);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
