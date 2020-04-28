@@ -6,7 +6,7 @@ export const slice = createSlice({
     initialState: {
         table: {
             pagination: {
-                rowsPerPage: 25,
+                rowsPerPage: parseInt(localStorage.getItem("resultTable.rowsPerPage"), 10) || 25,
                 page: 0,
             },
             ordering: {
@@ -18,6 +18,7 @@ export const slice = createSlice({
     reducers: {
         setRowsPerPage: (state, action) => {
             state.table.pagination.rowsPerPage = action.payload;
+            localStorage.setItem("resultTable.rowsPerPage", action.payload)
         },
         setPage: (state, action) => {
             state.table.pagination.page = action.payload;

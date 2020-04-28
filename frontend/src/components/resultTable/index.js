@@ -48,10 +48,18 @@ export default function SearchResultTableComponent() {
         {id: 'start_date', numeric: false, disablePadding: false, label: 'Date'},
         {id: 'name', numeric: false, disablePadding: false, label: 'Name'},
         {id: 'distance', numeric: true, disablePadding: false, label: 'Distance (km)'},
-        {id: 'elevation', numeric: true, disablePadding: false, label: 'Elevation (m)'},
+        {id: 'total_elevation_gain', numeric: true, disablePadding: false, label: 'Elevation (m)'},
         {id: 'pace', numeric: true, disablePadding: false, label: 'Pace (mins/km)'},
-        {id: 'move_time', numeric: true, disablePadding: false, label: 'Move Time'},
+        {id: 'moving_time', numeric: true, disablePadding: false, label: 'Move Time'},
     ];
+
+    activities = activities.map((row, index) => ({
+        ...row,
+        pace: speedToPaceMS(row.average_speed)
+    }));
+
+    const comparator = getComparator(tableState.ordering.order, tableState.ordering.orderBy);
+    const sortedActivities = stableSort(activities, comparator);
 
     return (
         <React.Fragment>
@@ -75,7 +83,7 @@ export default function SearchResultTableComponent() {
                         />
 
                         <TableBody>
-                            {stableSort(activities, getComparator(tableState.ordering.order, tableState.ordering.orderBy))
+                            {sortedActivities
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => (
                                     <TableRow key={`${row.name}_${index}`}>
@@ -88,7 +96,7 @@ export default function SearchResultTableComponent() {
                                         </TableCell>
                                         <TableCell align="right">{(row.distance / 1000).toFixed(2)}</TableCell>
                                         <TableCell align="right">{row.total_elevation_gain.toFixed(2)}</TableCell>
-                                        <TableCell align="right">{speedToPaceMS(row.average_speed)}</TableCell>
+                                        <TableCell align="right">{row.pace}</TableCell>
                                         <TableCell align="right">{secondsToHMS(row.moving_time)}</TableCell>
                                     </TableRow>
                                 ))}
