@@ -45,7 +45,7 @@ export default function SearchResultPlotComponent() {
             layout.yaxis.tickformat = "%M:%S";
             layout.xaxis.tickformat = "%Y-%m-%d";
             return layout;
-        }, [theme.palette, searchState.values]
+        }, [theme, searchState.values]
     );
 
     const initialState = initialPlotState(layoutMemo);
