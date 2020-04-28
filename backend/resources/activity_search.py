@@ -51,5 +51,5 @@ def blueprint(app):
     api.add_resource(ActivitySearch, '/search/<string:search_type>/<int:lower_distance>/<int:upper_distance>',
                      endpoint="distance")
     api.add_resource(ActivitySearch, '/search/<string:search_type>/<string:name>', endpoint="name")
-    api.add_resource(ActivitySearch, '/search/<string:search_type>', endpoint="rolling_average")
+    api.add_resource(ActivitySearch, '/search/<string:search_type>', endpoint="rolling")
     app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])
