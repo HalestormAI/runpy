@@ -16,3 +16,7 @@ export function speedToPaceMS(speed) {
     const secs = Math.round((x - mins) * 60);
     return `${pad(mins)}:${pad(secs)}`;
 }
+
+export function distanceFormat(distance) {
+    return (distance / 1000).toFixed(2);
+}

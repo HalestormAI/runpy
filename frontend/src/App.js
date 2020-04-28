@@ -4,12 +4,10 @@ import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import './App.css';
 import Navbar from "./components/ui/nav";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import StravaSearchComponent from "./components/search";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import {TabContainer} from "./components/ui/tabs";
 import {useDispatch, useSelector} from "react-redux";
-import {selectActivities} from "./components/search/searchApiSlice";
 import {selectDarkMode, selectDmMediaQueryState, updateMediaQueryState} from "./components/ui/themeSlice";
 
 function App() {
@@ -31,8 +29,6 @@ function App() {
             }),
         [prefersDarkMode]
     );
-
-    const activities = useSelector(selectActivities);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -42,13 +38,8 @@ function App() {
                         <Navbar/>
                     </Grid>
                     <Grid item xs={12}>
-                        <StravaSearchComponent/>
-                    </Grid>
-                {activities.length > 0 && (
-                    <Grid item xs={12}>
                         <TabContainer/>
                     </Grid>
-                )}
                 </Grid>
             </Container>
         </ThemeProvider>

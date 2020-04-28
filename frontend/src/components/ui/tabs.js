@@ -5,8 +5,8 @@ import Box from "@material-ui/core/Box";
 import React from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import SearchResultTableComponent from "../resultTable";
-import SearchResultPlotComponent from "../resultPlot";
+import DistanceSearchPage from "./pages/distanceSearchPage";
+import TemporalStatsPage from "./pages/TemporalStats";
 
 export function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -43,17 +43,18 @@ export function TabContainer(props) {
     const handleChange = (event, newValue) => {
         setTabId(newValue);
     };
+
     return (
         <React.Fragment>
             <Tabs value={tabId} onChange={handleChange} aria-label="simple tabs example">
-                <Tab label="Plots" {...a11yProps(0)} />
-                <Tab label="Table" {...a11yProps(1)} />
+                <Tab label="Temporal" {...a11yProps(0)} />
+                <Tab label="Distance Search" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={tabId} index={0}>
-                <SearchResultPlotComponent/>
+                <TemporalStatsPage/>
             </TabPanel>
             <TabPanel value={tabId} index={1}>
-                <SearchResultTableComponent/>
+                <DistanceSearchPage/>
             </TabPanel>
         </React.Fragment>
     )

@@ -4,6 +4,7 @@ import uiThemeReducer from '../components/ui/themeSlice';
 import searchApiReducer from '../components/search/searchApiSlice';
 import searchFormReducer from '../components/search/searchUiSlice';
 import resultTableReducer from '../components/resultTable/resultTableSlice';
+import temporalStatsReducer from '../components/ui/pages/TemporalStats/temporalStatsSlice'
 
 export default configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
     uiTheme: uiThemeReducer,
     searchApi: searchApiReducer,
     searchForm: searchFormReducer,
-    resultTable: resultTableReducer
+    resultTable: resultTableReducer,
+    statsApi: temporalStatsReducer
   },
 });

@@ -3,14 +3,12 @@ import Plot from 'react-plotly.js';
 import {useSelector} from "react-redux";
 import {selectActivities} from "../search/searchApiSlice";
 import {getComparator, stableSort} from "../../utils/sort"
-import {speedToPaceMS} from "../../utils/ui";
+import {distanceFormat, speedToPaceMS} from "../../utils/ui";
 import config from "../../app/config/config";
 import {selectFormState} from "../search/searchUiSlice";
 import {useTheme} from '@material-ui/core/styles';
+import {defaultPlotLayout, initialPlotState} from "../../utils/plot";
 
-function distanceFormat(distance) {
-    return (distance / 1000).toFixed(2);
-}
 
 function createData(activities) {
     const workoutTypes = ["Run", "Race", "Long Run", "Workout"];
@@ -42,40 +40,18 @@ export default function SearchResultPlotComponent() {
 
     const layoutMemo = React.useMemo(
         () => {
-            return ({
-                autosize: true,
-                responsize: true,
-                yaxis: {
-                    gridcolor: theme.palette.background.default,
-                    zerolinecolor: theme.palette.background.default,
-                    linecolor: theme.palette.background.default,
-                    tickformat: "%M:%S"
-                },
-                xaxis: {
-                    gridcolor: theme.palette.background.default,
-                    zerolinecolor: theme.palette.background.default,
-                    linecolor: theme.palette.background.default,
-                    tickformat: "%Y-%m-%d"
-                },
-                plot_bgcolor: theme.palette.background.paper,
-                paper_bgcolor: theme.palette.background.paper,
-                title: `Pace (mins/km) over time ${distanceFormat(searchState.values.low)}km ... ${distanceFormat(searchState.values.high)}km`,
-                font: {
-                    color: theme.palette.text.primary
-                }
-            })
+            const title = `Pace (mins/km) over time ${distanceFormat(searchState.values.low)}km ... ${distanceFormat(searchState.values.high)}km`;
+            const layout = defaultPlotLayout(theme, title);
+            layout.yaxis.tickformat = "%M:%S";
+            layout.xaxis.tickformat = "%Y-%m-%d";
+            return layout;
         }, [theme.palette, searchState.values]
     );
 
-    const initialState = {
-        layout: {...layoutMemo},
-        frames: [],
-        config: {}
-    };
-
+    const initialState = initialPlotState(layoutMemo);
     const [state, setState] = useState(initialState);
 
-    const wouldUpdate = (fig) => {
+    const updateState = (fig) => {
         state.layout = {
             ...fig.layout,
             ...layoutMemo,
@@ -83,7 +59,6 @@ export default function SearchResultPlotComponent() {
         state.config = {...fig.config};
         state.frames = {...fig.frames};
         setState(state);
-        console.log("Setting state: ", state);
     };
 
     return (
@@ -94,7 +69,7 @@ export default function SearchResultPlotComponent() {
                 data={[createData(activities)]}
                 layout={state.layout}
                 onInitialized={(figure) => setState(figure)}
-                onUpdate={(figure) => wouldUpdate(figure)}
+                onUpdate={(figure) => updateState(figure)}
             />
         </div>
     );
