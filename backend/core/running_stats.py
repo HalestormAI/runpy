@@ -1,20 +1,18 @@
 import json
 import logging
+from collections import Iterable
 
+import numpy as np
+import pandas as pd
 from bson import json_util
 
 from . import mongo
 from .connection import StravaConnectedObject
 
-# import plotly.express as px
-#
-# import plotly.graph_objs as go
-# from ipywidgets import Output, VBox
 logger = logging.getLogger("runpy")
 
 
 class StatHandlers(object):
-
     _handlers = {}
 
     @staticmethod
@@ -106,55 +104,64 @@ class ActivitiesForName(StatHandler):
         }
         return StatHandler.parse_result(db.activities.find(query))
 
-    #     activity_date_speeds = [(a['start_date_local'], a['average_speed'], a['name'], a['distance']/1000) for a in activities]
-    #
-    #     df = pd.DataFrame(activity_date_speeds, columns=('date', 'speed', 'name', 'distance'))
-    #
-    #     # Speed is in m/s, pace is in min/km
-    #     df['pace'] = 1000 / df['speed'] / 60
-    #     df['date'] = pd.to_datetime(df['date'])
-    #     df.sort_values('date', inplace=True)
-    #     # df.set_index(['date'], inplace=True)
-    #
-    #     df['date_formatted_pace'] = self._format_pace_for_plotly(df['pace'])
-    #     fig = px.scatter(df, x='date', y='date_formatted_pace', hover_data=['name', 'distance'], title=f'{int(target_distance/1000)}km Running Pace (+/- {target_distance*margin/1000:.2f}km)')
-    #     fig.update_layout(
-    #         yaxis_tickformat='%M:%S'
-    #     )
-    #
-    #     scatter = fig.data[0]
-    #     scatter.on_click(self._go_to_activity)
-    #
-    #     fig.show()
-    #
-    #     # df['pace'].plot(style="o")
-    #     # plt.title(f"Average pace for ~{int(target_distance / 1000)}km runs over time")
-    #     # plt.xlabel("Date")
-    #     # plt.ylabel("Pace (mins/km)")
-    #     # plt.show()
-    #     print(activities[0])
-    #
-    # def _format_pace_for_plotly(self, pace_df):
-    #     # Plotly needs a full datetime to understand it as a date
-    #     float_to_pace = lambda x:  f"1970-1-1 00:{int(x):02}:{int(x * 60 - int(x) * 60):02}"
-    #     return pace_df.apply(float_to_pace)
-    #
-    # def _go_to_activity(self, trace, points, selector):
-    #     print(trace)
-    #     pass
+
+class WindowedActivityPace(StatHandler):
+
+    def __init__(self, config=None):
+        super().__init__("windowedActivityPace", config)
+
+    def get_activities(self, type='Run', ignore_manual=True):
+        db = self.mongo_client()
+        query = {
+            "type": type
+        }
+        db_result = db.activities.find(query, {
+            'start_date': 1,
+            'average_speed': 1,
+            "distance": 1,
+            "total_elevation_gain": 1
+        }
+
+                                       )
+        results = StatHandler.parse_result(db_result)
+
+        sorted_results = sorted(results, key=lambda x: x["start_date"])
+        df = pd.DataFrame(sorted_results)
+        df["start_date"] = pd.to_datetime(df["start_date"], infer_datetime_format=True)
+
+        df = df.set_index("start_date")
+
+        data_cols = [c for c in df.columns if c != "_id"]
+        df = df[data_cols]
+
+        aggregation_spec = {k: [np.mean, np.min, np.max] for k in df.columns}
+        agg = df.groupby(pd.Grouper(freq="M")).aggregate(aggregation_spec)
+        agg["distance"] = agg["distance"].fillna(0)
+
+        def safeNan(i):
+            if isinstance(i, Iterable):
+                return [safeNan(j) for j in i]
+            if np.isnan(i):
+                return None
+            return i
+
+        # The dict is non-serializable for a few reasons, we'll have to fix that manually:
+        # (1) Top-level keys are tuples, break into 2 levels
+        # (2) Due to Timestamp objects as keys in child dicts -> fix to strings
+        # (3) NaN is not a valid type for JSON and cannot be deserialised at the other end
+        output = {}
+        for col in data_cols:
+            # Format the df as {TS(date): {mean: m, std: s}}
+            col_data = agg[col].to_dict(orient="index")
+
+            # Clean for JSON and remove inner dict
+            # {str(date): [m, s]}
+            output[col] = {str(k): safeNan(v.values()) for k, v in col_data.items()}
+
+        return output
 
 
 def register_handlers():
-    handlers = [ActivitiesForDistance, ActivitiesForMargin, ActivitiesForName]
+    handlers = [ActivitiesForDistance, ActivitiesForMargin, ActivitiesForName, WindowedActivityPace]
     for handler in handlers:
         handler()
-
-#
-# if __name__ == "__main__":
-#     config = Config('config.json')
-#     rs = RunningStatHandler(config)
-#     rs.connect(validate_token=False)
-#     # rs.find_activities_for_distance(10000, ignore_manual=True)
-#     # rs.find_activities_for_distance(5000, ignore_manual=True)
-#     rs.find_activities_for_distance(7500, margin=2, ignore_manual=True)
-#     # rs.find_activities_for_distance(21000, ignore_manual=True)

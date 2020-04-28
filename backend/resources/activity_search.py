@@ -16,6 +16,8 @@ class ActivitySearch(Resource):
             return self.distance_search(lower_distance, upper_distance)
         if search_type == "name":
             return self.name_search(name)
+        if search_type == "rolling":
+            return self.rolling_average()
 
         return {
             "message": "Error: Search type not provided",
@@ -35,10 +37,19 @@ class ActivitySearch(Resource):
             "activities": activities
         }
 
+    def rolling_average(self):
+        activities = StatHandlers.get("windowedActivityPace").get_activities()
+        return {
+            "message": "name",
+            "activities": activities
+        }
+
 
 def blueprint(app):
-    api_bp = Blueprint('search_api', __name__ )
+    api_bp = Blueprint('search_api', __name__)
     api = Api(api_bp)
-    api.add_resource(ActivitySearch, '/search/<string:search_type>/<int:lower_distance>/<int:upper_distance>', endpoint="distance")
+    api.add_resource(ActivitySearch, '/search/<string:search_type>/<int:lower_distance>/<int:upper_distance>',
+                     endpoint="distance")
     api.add_resource(ActivitySearch, '/search/<string:search_type>/<string:name>', endpoint="name")
+    api.add_resource(ActivitySearch, '/search/<string:search_type>', endpoint="rolling_average")
     app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])
