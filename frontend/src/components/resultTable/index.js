@@ -13,6 +13,7 @@ import EnhancedTableHead from "./enhancedTableHead";
 import config from "../../app/config/config";
 import {secondsToHMS, speedToPaceMS} from "../../utils/ui";
 import {getComparator, stableSort} from "../../utils/sort"
+import Link from "@material-ui/core/Link";
 
 export default function SearchResultTableComponent() {
     let activities = useSelector(selectActivities);
@@ -83,7 +84,7 @@ export default function SearchResultTableComponent() {
                                             {new Date(row.start_date).toLocaleDateString(config.locale)}
                                         </TableCell>
                                         <TableCell component="th" scope="row">
-                                            <a href={stravaUrl(row.id)}>{row.name}</a>
+                                            <Link href={stravaUrl(row.id)} color="secondary">{row.name}</Link>
                                         </TableCell>
                                         <TableCell align="right">{(row.distance / 1000).toFixed(2)}</TableCell>
                                         <TableCell align="right">{row.total_elevation_gain.toFixed(2)}</TableCell>
