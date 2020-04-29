@@ -5,8 +5,9 @@ import Box from "@material-ui/core/Box";
 import React from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import DistanceSearchPage from "./pages/distanceSearchPage";
+import DistanceSearchPage from "./pages/DistanceSearch";
 import TemporalStatsPage from "./pages/TemporalStats";
+import MapVisPage from "./pages/MapVis";
 
 export function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -49,12 +50,16 @@ export function TabContainer(props) {
             <Tabs value={tabId} onChange={handleChange} aria-label="simple tabs example">
                 <Tab label="Temporal" {...a11yProps(0)} />
                 <Tab label="Distance Search" {...a11yProps(1)} />
+                <Tab label="Map" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabId} index={0}>
                 <TemporalStatsPage/>
             </TabPanel>
             <TabPanel value={tabId} index={1}>
                 <DistanceSearchPage/>
+            </TabPanel>
+            <TabPanel value={tabId} index={2}>
+                <MapVisPage/>
             </TabPanel>
         </React.Fragment>
     )

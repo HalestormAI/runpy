@@ -1,10 +1,10 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import StravaSearchComponent from "../../search";
-import SearchResultPlotComponent from "../../resultPlot";
-import SearchResultTableComponent from "../../resultTable";
+import StravaSearchComponent from "../../../search";
+import SearchResultPlotComponent from "../../../resultPlot";
+import SearchResultTableComponent from "../../../resultTable";
 import {useSelector} from "react-redux";
-import {selectActivities} from "../../search/searchApiSlice";
+import {selectActivities} from "../../../search/searchApiSlice";
 
 export default function DistanceSearchPage(props) {
     const activities = useSelector(selectActivities);

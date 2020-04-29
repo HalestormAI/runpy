@@ -10,6 +10,7 @@ import {TabContainer} from "./components/ui/tabs";
 import {useDispatch, useSelector} from "react-redux";
 import {selectDarkMode, selectDmMediaQueryState, updateMediaQueryState} from "./components/ui/themeSlice";
 
+
 function App() {
     const prefersDarkMode = useSelector(selectDarkMode);
     const mqDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

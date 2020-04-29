@@ -37,3 +37,8 @@
     transform: translateY(0px)
   }
 }
+.leaflet-container {
+  height: 100%;
+  min-height: 700px;
+  width: 100%;
+}
