@@ -5,6 +5,7 @@ import searchApiReducer from '../components/search/searchApiSlice';
 import searchFormReducer from '../components/search/searchUiSlice';
 import resultTableReducer from '../components/resultTable/resultTableSlice';
 import temporalStatsReducer from '../components/ui/pages/TemporalStats/temporalStatsSlice'
+import mapApiReducer from '../components/ui/pages/MapVis/mapSlice'
 
 export default configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export default configureStore({
     searchApi: searchApiReducer,
     searchForm: searchFormReducer,
     resultTable: resultTableReducer,
-    statsApi: temporalStatsReducer
+    statsApi: temporalStatsReducer,
+    mapsApi: mapApiReducer
   },
 });
