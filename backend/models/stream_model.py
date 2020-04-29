@@ -32,10 +32,18 @@ class ActivityStreamModel(StravaConnectedObject):
     @staticmethod
     def doc_from_strava(activity_id, strava_data):
         streams_data = strava_data.to_dict()
+        if "lng" in streams_data and "lat" in streams_data:
+            geo = {
+                "type": "LineString",
+                "coordinates": [c for c in zip(streams_data["lng"], streams_data["lat"])]
+            }
+        else:
+            geo = {}
         return {
             "activity_id": int(activity_id),
             "data": streams_data,
-            "fetch_date": datetime.now()
+            "fetch_date": datetime.now(),
+            "geoIndex": geo
         }
 
     @staticmethod

@@ -1,11 +1,12 @@
 import logging
 import sys
+
 from flask import Flask
 from flask_cors import CORS
 
 from .core.config import Config
-from .resources import activity_search, activity_dl, frontend
 from .core.running_stats import register_handlers
+from .resources import activity_search, activity_dl, frontend, geo_search
 
 logger = logging.getLogger("runpy")
 config = Config.get_instance()
@@ -29,6 +30,7 @@ def create_app(config_filename):
     activity_search.blueprint(app)
     activity_dl.blueprint(app)
     frontend.blueprint(app)
+    geo_search.blueprint(app)
     return app
 
 
