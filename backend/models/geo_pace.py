@@ -20,15 +20,17 @@ class GeoSpeedModel(object):
 
         agg_query = [
             {
+                '$lookup': {
+                    'from': 'activities',
+                    'localField': 'activity_id',
+                    'foreignField': 'id',
+                    'as': 'full_act'
+                }
+            }, {
+                '$unwind': '$full_act'
+            }, {
                 '$match': {
-                    'geoIndex': {
-                        '$geoIntersects': {
-                            '$geometry': {
-                                'type': 'Polygon',
-                                'coordinates': [coordinates]
-                            }
-                        }
-                    }
+                    'full_act.type': {'$eq': 'Run'}
                 }
             }, {
                 '$project': {
@@ -37,31 +39,44 @@ class GeoSpeedModel(object):
                         '$map': {
                             'input': '$data.lat',
                             'as': 'decimalValue',
-                            'in': {'$trunc': ['$$decimalValue', 3]
-                                   }
+                            'in': {
+                                '$trunc': [
+                                    '$$decimalValue', 4
+                                ]
+                            }
                         }
                     },
                     'lngs': {
                         '$map': {
                             'input': '$data.lng',
                             'as': 'decimalValue',
-                            'in': {'$trunc': ['$$decimalValue', 3]
-                                   }
+                            'in': {
+                                '$trunc': [
+                                    '$$decimalValue', 4
+                                ]
+                            }
                         }
                     },
                     'spd': '$data.velocity_smooth'
                 }
             }
         ]
+
         db = mongo.factory.default_client()
         cur = db.streams.aggregate(agg_query)
 
         data = []
         for row in cur:
-            for lat, lng, spd in zip(row["lats"], row["lngs"], row["spd"]):
-                data.append((lat, lng, spd))
-        output = pd.DataFrame(data, columns=("lat", "lng", "speed")).groupby(["lat", "lng"]).mean()
+            if row["lats"] is None or row["lngs"] is None or row["spd"] is None:
+                continue
+            try:
+                for lat, lng, spd in zip(row["lats"], row["lngs"], row["spd"]):
+                    data.append((lat, lng, spd))
+            except Exception as err:
+                print(err)
+        output = pd.DataFrame(data, columns=("lat", "lng", "speed")).groupby(["lat", "lng"])
 
-        return {
-            "data": output.reset_index().values.tolist()
-        }
+        output = output.mean()
+        output = (output - output.min())
+        output = output / output.max()
+        return output.reset_index().values.tolist()

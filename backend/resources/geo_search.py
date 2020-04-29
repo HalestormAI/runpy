@@ -10,7 +10,9 @@ class GeoSpeedForBounds(Resource):
     def get(self, north_east, south_west):
         north_east = [float(f) for f in north_east.split(",")]
         south_west = [float(f) for f in south_west.split(",")]
-        return GeoSpeedModel.get_for_bounds(north_east, south_west)
+        return {
+            "data": GeoSpeedModel.get_for_bounds(north_east, south_west)
+        }
 
 
 def blueprint(app):
