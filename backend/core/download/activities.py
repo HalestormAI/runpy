@@ -3,11 +3,11 @@ import logging
 import maya
 import progressbar
 
-from .. import mongo
 from .downloader import (
     AbstractDownloader,
     DownloadBuffer
 )
+from .. import mongo
 from ...models.activity_model import ActivityModel
 
 logger = logging.getLogger("runpy")
@@ -42,18 +42,19 @@ class ActivityDownloader(AbstractDownloader):
         # Run through all activity IDs, check if we've already stored them. If not, pull the summary and store
         # TODO: What about updating after edits?
         downloaded_activities = []
-        for a in progressbar.progressbar(activity_ids):
-            self.progress.log(f"Downloading activity {a.id}")
-            self.progress.log(f"Storing activity {a.id} in database")
-            activity = self.client.get_activity_by_id(a.id)
-            download_buffer.add(activity.to_dict())
-            downloaded_activities.append(activity.to_dict())
-            self.progress.next()
+        try:
+            for a in progressbar.progressbar(activity_ids):
+                self.progress.log(f"Downloading activity {a.id}")
+                self.progress.log(f"Storing activity {a.id} in database")
+                activity = self.client.get_activity_by_id(a.id)
+                download_buffer.add(activity.to_dict())
+                downloaded_activities.append(activity.to_dict())
+                self.progress.next()
 
-        if len(download_buffer) > 0:
-            download_buffer.flush()
-
-        self.progress.end()
+        finally:
+            if len(download_buffer) > 0:
+                download_buffer.flush()
+            self.progress.end()
 
         # Update the config last download date
         self.config['strava']['_last_download'] = str(maya.now())

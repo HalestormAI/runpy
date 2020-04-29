@@ -1,11 +1,11 @@
 import progressbar
 import stravaio
 
-from .. import mongo
 from .downloader import (
     AbstractDownloader,
     DownloadBuffer
 )
+from .. import mongo
 
 
 class GearDownloader(AbstractDownloader):
@@ -31,15 +31,21 @@ class GearDownloader(AbstractDownloader):
 
         ids_to_download = [a for a in activity_gear_ids if a not in stored_gear_ids]
         downloaded_gear = []
-        for g in progressbar.progressbar(ids_to_download):
-            api_response = self.api.get_gear_by_id(g)
-            d = api_response.to_dict()
-            d = stravaio.convert_datetime_to_iso8601(d)
-            download_buffer.add(d)
-            downloaded_gear.append(g)
 
-        if len(download_buffer) > 0:
-            download_buffer.flush()
+        self.progress.set_num(len(ids_to_download))
+        self.progress.start()
+        try:
+            for g in progressbar.progressbar(ids_to_download):
+                api_response = self.api.get_gear_by_id(g)
+                d = api_response.to_dict()
+                d = stravaio.convert_datetime_to_iso8601(d)
+                download_buffer.add(d)
+                downloaded_gear.append(g)
+
+        finally:
+            if len(download_buffer) > 0:
+                download_buffer.flush()
+            self.progress.end()
 
         return downloaded_gear
 
