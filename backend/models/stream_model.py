@@ -24,13 +24,20 @@ class ActivityStreamModel(StravaConnectedObject):
             return existing_streams["data"]
 
         streams = self.client.get_activity_streams(activity_id, self.athlete_id)
-
-        streams_data = streams.to_dict()
-        stream_doc = {
-            "activity_id": activity_id,
-            "data": streams_data,
-            "fetch_date": datetime.now()
-        }
+        stream_doc = ActivityStreamModel.doc_from_strava(activity_id, streams)
         db.streams.insert_one(stream_doc)
 
         return stream_doc["data"]
+
+    @staticmethod
+    def doc_from_strava(activity_id, strava_data):
+        streams_data = strava_data.to_dict()
+        return {
+            "activity_id": int(activity_id),
+            "data": streams_data,
+            "fetch_date": datetime.now()
+        }
+
+    @staticmethod
+    def exists(collection, activity_id):
+        return collection.count_documents({"id": int(activity_id)}, limit=1) > 0
