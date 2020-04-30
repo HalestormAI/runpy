@@ -5,19 +5,31 @@ import {call} from "../../../../utils/api";
 //       Decided to have this separate to the search form as both might want to be populated at once, and they're
 //       independent of each other, despite having similar API functionality
 
+export const defaultZoom = 15;
+
 // TODO: Get shot of this:
 const DEFAULT_VIEWPORT = {
     center: [51.49686, -2.54510],
-    zoom: 15,
+    zoom: defaultZoom,
+};
+
+const queryParams = (optionState) => {
+    return Object.entries(optionState)
+        .map((key) => `${encodeURIComponent(key[0])}=${encodeURIComponent(key[1])}`)
+        .join("&");
 };
 
 export const slice = createSlice({
     name: 'statsData',
     initialState: {
-        latLngSpeeds: [[]],
+        latLngSpeeds: {points: [], stats: null},
         map: {
             viewport: DEFAULT_VIEWPORT,
-            bounds: null
+            bounds: null,
+            options: {
+                intersect: false,
+                granularity: 3
+            }
         },
         data: {
             errorMessage: null,
@@ -32,6 +44,9 @@ export const slice = createSlice({
             state.data.waiting = false;
         },
         searchSuccess: (state, action) => {
+            if (action.payload.data === undefined) {
+                return;
+            }
             state.latLngSpeeds = action.payload.data;
             state.data.errorMessage = null;
         },
@@ -47,12 +62,18 @@ export const slice = createSlice({
         },
         updateMapViewport: (state, action) => {
             state.map.viewport = action.payload;
+        },
+        updateOptionState: (state, action) => {
+            state.map.options = {
+                ...state.map.options,
+                ...action.payload
+            };
         }
     }
 });
 
 
-export const {updateMapBounds, updateMapViewport, searchFetch, searchDone, searchSuccess, searchError, searchClearError} = slice.actions;
+export const {updateMapBounds, updateMapViewport, searchFetch, searchDone, searchSuccess, searchError, updateOptionState} = slice.actions;
 
 export const loadStats = () => (dispatch, getState) => {
     const state = getState().mapsApi;
@@ -62,7 +83,10 @@ export const loadStats = () => (dispatch, getState) => {
     }
     const ne = state.map.bounds.ne;
     const sw = state.map.bounds.sw;
-    const url = `/geo/speed/${ne.lng},${ne.lat}/${sw.lng},${sw.lat}`;
+    let url = `/geo/speed/${ne.lng},${ne.lat}/${sw.lng},${sw.lat}`;
+    url += "?" + queryParams(state.map.options);
+    console.log(url)
+
     dispatch(searchFetch());
     call(dispatch, url, searchDone, searchSuccess, searchError)
 };
