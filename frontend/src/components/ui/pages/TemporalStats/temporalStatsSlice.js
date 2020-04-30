@@ -9,6 +9,11 @@ export const slice = createSlice({
     name: 'statsData',
     initialState: {
         activities: {},
+        options: {
+            frequency: "monthly",
+            show_mean: true,
+            show_markers: false
+        },
         data: {
             errorMessage: null,
             waiting: false
@@ -22,6 +27,9 @@ export const slice = createSlice({
             state.data.waiting = false;
         },
         searchSuccess: (state, action) => {
+            if (action.payload.activities === undefined) {
+                return;
+            }
             state.activities = action.payload.activities;
             state.data.errorMessage = null;
         },
@@ -31,19 +39,25 @@ export const slice = createSlice({
         },
         searchClearError: state => {
             state.data.errorMessage = null;
+        },
+        updateOptionState: (state, action) => {
+            state.options = {
+                ...state.options,
+                ...action.payload
+            };
         }
     }
 });
 
 
-export const {searchFetch, searchDone, searchSuccess, searchError, searchClearError} = slice.actions;
+export const {searchFetch, searchDone, searchSuccess, searchError, searchClearError, updateOptionState} = slice.actions;
 
 export const loadStats = () => (dispatch, getState) => {
-    const url = "/search/rolling";
+    const url = "/search/rolling?frequency=" + getState().statsApi.options.frequency;
     dispatch(searchFetch());
     call(dispatch, url, searchDone, searchSuccess, searchError)
 };
 
 export default slice.reducer;
-export const selectApiState = state => state.statsApi.data;
+export const selectOptions = state => state.statsApi.options;
 export const selectActivities = state => state.statsApi.activities;

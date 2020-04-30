@@ -110,7 +110,7 @@ class WindowedActivityPace(StatHandler):
     def __init__(self, config=None):
         super().__init__("windowedActivityPace", config)
 
-    def get_activities(self, type='Run', ignore_manual=True):
+    def get_activities(self, frequency, type='Run', ignore_manual=True):
         db = self.mongo_client()
         query = {
             "type": type
@@ -135,7 +135,12 @@ class WindowedActivityPace(StatHandler):
         df = df[data_cols]
 
         aggregation_spec = {k: [np.mean, np.min, np.max] for k in df.columns}
-        agg = df.groupby(pd.Grouper(freq="M")).aggregate(aggregation_spec)
+        if frequency.lower() == "weekly":
+            f = "W"
+        else:
+            f = "M"
+
+        agg = df.groupby(pd.Grouper(freq=f)).aggregate(aggregation_spec)
         agg["distance"] = agg["distance"].fillna(0)
 
         def safeNan(i):

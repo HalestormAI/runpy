@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask_restful import Api
+from flask_restful import Api, reqparse
 from flask_restful import Resource
 
 from ..core.config import Config
@@ -38,7 +38,16 @@ class ActivitySearch(Resource):
         }
 
     def rolling_average(self):
-        activities = StatHandlers.get("windowedActivityPace").get_activities()
+        parser = reqparse.RequestParser()
+        parser.add_argument("frequency", type=str, default="monthly",
+                            help="Frequency of the rolling average, either 'monthly' or 'weekly' (defaults to monthly)")
+        args = parser.parse_args()
+
+        if args.frequency.lower() not in ["monthly", "weekly"]:
+            # TODO: Make this return the right status code
+            #  - see https://stackoverflow.com/questions/41149409/flask-restful-custom-error-handling
+            raise reqparse.ValueError("Invalid frequency provided: must be one of [monthly, weekly]")
+        activities = StatHandlers.get("windowedActivityPace").get_activities(args.frequency)
         return {
             "message": "name",
             "activities": activities
