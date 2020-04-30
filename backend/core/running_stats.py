@@ -62,9 +62,20 @@ class ActivitiesForDistance(StatHandler):
             },
             "type": type
         }
+
+        projection = {
+            "id": 1,
+            "name": 1,
+            "start_date": 1,
+            "average_speed": 1,
+            "distance": 1,
+            "workout_type": 1,
+            "total_elevation_gain": 1,
+            "moving_time": 1
+        }
         if ignore_manual:
             query["manual"] = False
-        return StatHandler.parse_result(db.activities.find(query))
+        return StatHandler.parse_result(db.activities.find(query, projection))
 
 
 class ActivitiesForMargin(StatHandler):
