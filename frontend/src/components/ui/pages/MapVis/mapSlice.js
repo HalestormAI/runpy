@@ -19,6 +19,8 @@ const queryParams = (optionState) => {
         .join("&");
 };
 
+let activeCall = {c:0};
+
 export const slice = createSlice({
     name: 'statsData',
     initialState: {
@@ -44,9 +46,10 @@ export const slice = createSlice({
             state.data.waiting = false;
         },
         searchSuccess: (state, action) => {
-            if (action.payload.data === undefined) {
+            if (action.payload.data === undefined || action.payload.call_id !== activeCall.c) {
                 return;
             }
+
             state.latLngSpeeds = action.payload.data;
             state.data.errorMessage = null;
         },
@@ -88,7 +91,9 @@ export const loadStats = () => (dispatch, getState) => {
     console.log(url)
 
     dispatch(searchFetch());
-    call(dispatch, url, searchDone, searchSuccess, searchError)
+    activeCall.c++
+    const current_call = activeCall.c;
+    call(dispatch, url, searchDone, searchSuccess, searchError, current_call, activeCall);
 };
 
 export default slice.reducer;
