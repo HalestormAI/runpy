@@ -1,17 +1,30 @@
 from flask import Blueprint
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 
 from backend.core.config import Config
+from backend.core.utils import str_arg_is_true
 from backend.models.geo_pace import GeoSpeedModel
 
 
 class GeoSpeedForBounds(Resource):
 
     def get(self, north_east, south_west):
+        parser = reqparse.RequestParser()
+        parser.add_argument('granularity', type=int, default=3,
+                            help="Precision of the Lat/Long index search (num DP). Higher values produce more precise "
+                                 "data but at the cost of memory and process load. Recommended range (3-4)")
+        parser.add_argument('intersect', type=str, default=None,
+                            help="Use polygon intersection for geo search. If not supplied, we default to a 'within' "
+                                 "query, which will provide fewer results out-of-bounds, possibly at the expense of "
+                                 "tracks that leave the bounds")
+        args = parser.parse_args()
+
         north_east = [float(f) for f in north_east.split(",")]
         south_west = [float(f) for f in south_west.split(",")]
+
+        intersect = str_arg_is_true(args.intersect)
         return {
-            "data": GeoSpeedModel.get_for_bounds(north_east, south_west)
+            "data": GeoSpeedModel.get_for_bounds(north_east, south_west, args.granularity, intersect)
         }
 
 

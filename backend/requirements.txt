@@ -5,4 +5,5 @@ flask-cors
 pandas
 maya
 pymongo
+scipy
 -e git://@github.com:HalestormAI/stravaio.git#egg=stravaio

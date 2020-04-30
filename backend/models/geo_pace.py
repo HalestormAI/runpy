@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+from scipy import stats
 
 from backend.core import mongo
 
@@ -6,7 +8,7 @@ from backend.core import mongo
 class GeoSpeedModel(object):
 
     @staticmethod
-    def get_for_bounds(north_east, south_west):
+    def get_for_bounds(north_east, south_west, granularity=3, intersect=False):
         c_e, c_n = north_east
         c_w, c_s = south_west
 
@@ -18,8 +20,21 @@ class GeoSpeedModel(object):
             [c_e, c_n]
         ]
 
+        lat_bounds = [c_n, c_s]
+        lon_bounds = [c_e, c_e]
         agg_query = [
             {
+                '$match': {
+                    'geoIndex': {
+                        '$geoIntersects' if intersect else '$geoWithin': {
+                            '$geometry': {
+                                'type': 'Polygon',
+                                'coordinates': [coordinates]
+                            }
+                        }
+                    }
+                }
+            }, {
                 '$lookup': {
                     'from': 'activities',
                     'localField': 'activity_id',
@@ -30,7 +45,9 @@ class GeoSpeedModel(object):
                 '$unwind': '$full_act'
             }, {
                 '$match': {
-                    'full_act.type': {'$eq': 'Run'}
+                    'full_act.type': {
+                        '$eq': 'Run'
+                    }
                 }
             }, {
                 '$project': {
@@ -41,7 +58,7 @@ class GeoSpeedModel(object):
                             'as': 'decimalValue',
                             'in': {
                                 '$trunc': [
-                                    '$$decimalValue', 4
+                                    '$$decimalValue', granularity
                                 ]
                             }
                         }
@@ -52,7 +69,7 @@ class GeoSpeedModel(object):
                             'as': 'decimalValue',
                             'in': {
                                 '$trunc': [
-                                    '$$decimalValue', 4
+                                    '$$decimalValue', granularity
                                 ]
                             }
                         }
@@ -74,9 +91,12 @@ class GeoSpeedModel(object):
                     data.append((lat, lng, spd))
             except Exception as err:
                 print(err)
-        output = pd.DataFrame(data, columns=("lat", "lng", "speed")).groupby(["lat", "lng"])
+
+        output = pd.DataFrame(data, columns=("lat", "lng", "speed"))
 
         output = output.mean()
+
+        # Min/max normalise
         output = (output - output.min())
         output = output / output.max()
         return output.reset_index().values.tolist()
