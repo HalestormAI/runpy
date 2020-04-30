@@ -94,9 +94,33 @@ class GeoSpeedModel(object):
 
         output = pd.DataFrame(data, columns=("lat", "lng", "speed"))
 
+        if output.size == 0:
+            return {
+                "points": [],
+                "stats": None
+            }
+
+        # Filter out likely bad entries
+        if intersect:
+            # intersect gives us loads of points outside the viewport bounds that we don't need to process
+            # TODO: This should probably be part of the mongo aggregation...
+            valid_lat = output["lat"].between(c_s, c_n)
+            valid_lng = output["lng"].between(c_w, c_e)
+            output = output[valid_lng & valid_lat]
+        output = output[(np.abs(stats.zscore(output["speed"])) < 3)]
+        output = output.groupby(["lat", "lng"])
         output = output.mean()
 
         # Min/max normalise
         output = (output - output.min())
         output = output / output.max()
-        return output.reset_index().values.tolist()
+
+        return {
+            "points": output.reset_index().values.tolist(),
+            "stats": {
+                "mean": output.mean().values[0],
+                "std": output.std().values[0],
+                "max": output.max().values[0],
+                "min": output.min().values[0],
+            }
+        }
