@@ -49,7 +49,7 @@ function ErrorBarTemporalPlot(props) {
         fill: "tonexty",
         fillcolor: secondaryColor,
         line: {color: "#efefef"},
-        name: "UpperBound",
+        name: "Max",
         showlegend: false,
         type: "scatter",
         connectgaps: true
@@ -60,7 +60,7 @@ function ErrorBarTemporalPlot(props) {
         y: y_low,
         line: {color: "#efefef"},
         mode: "lines",
-        name: "Lowerbound",
+        name: "Min",
         showlegend: false,
         type: "scatter",
         connectgaps: true
@@ -107,10 +107,12 @@ function PlotOptions(props) {
     return (
         <FormGroup row>
             <div>
-                <label>Weekly</label>
+                <label> Weekly </label>
                 <FormControlLabel
-                    control={<Switch checked={options.frequency === "monthly"} onChange={setFrequency}
-                                     name="intersectionSwitch"/>}
+                    control={<Switch checked={options.frequency === "monthly"}
+                                     onChange={setFrequency}
+                                     name="intersectionSwitch"
+                                     color="default"/>}
                     label="Monthly"
                 />
             </div>
