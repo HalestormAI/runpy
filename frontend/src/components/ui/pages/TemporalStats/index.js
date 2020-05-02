@@ -149,7 +149,8 @@ export default function TemporalStatsPage(props) {
     const distanceToKm = distances => Object.entries(distances).reduce(accumulate_distance, {});
 
     return (
-        <React.Fragment>
+
+        <Grid container>
             {hasStats ? (
                     <React.Fragment>
                         <Grid item xs={12}>
@@ -173,9 +174,10 @@ export default function TemporalStatsPage(props) {
                         </Grid>
                     </React.Fragment>
                 ) :
-                <React.Fragment>
+                <Grid item xs={12}>
                     <LoadingSpinner/>
-                </React.Fragment>}
-        </React.Fragment>
+                </Grid>
+            }
+        </Grid>
     )
 };
