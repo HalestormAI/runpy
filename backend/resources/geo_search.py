@@ -4,6 +4,7 @@ from flask_restful import Api, Resource, reqparse
 from backend.core.config import Config
 from backend.core.utils import str_arg_is_true
 from backend.models.geo_speed_model import geo_speed_for_bounds
+from backend.models.inital_position_model import filtered_average_position
 
 
 class GeoSpeedForBounds(Resource):
@@ -28,8 +29,17 @@ class GeoSpeedForBounds(Resource):
         }
 
 
+class GeoAveragePosition(Resource):
+
+    def get(self):
+        return {
+            "data": filtered_average_position()
+        }
+
+
 def blueprint(app):
     api_bp = Blueprint('geo_search_api', __name__)
     api = Api(api_bp)
     api.add_resource(GeoSpeedForBounds, '/geo/speed/<string:north_east>/<string:south_west>', endpoint="speed")
+    api.add_resource(GeoAveragePosition, '/geo/average-position', endpoint="avg_pos")
     app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])
