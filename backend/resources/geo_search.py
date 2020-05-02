@@ -3,7 +3,7 @@ from flask_restful import Api, Resource, reqparse
 
 from backend.core.config import Config
 from backend.core.utils import str_arg_is_true
-from backend.models.geo_speed_model import GeoSpeedModel
+from backend.models.geo_speed_model import geo_speed_for_bounds
 
 
 class GeoSpeedForBounds(Resource):
@@ -24,7 +24,7 @@ class GeoSpeedForBounds(Resource):
 
         intersect = str_arg_is_true(args.intersect)
         return {
-            "data": GeoSpeedModel.get_for_bounds(north_east, south_west, args.granularity, intersect)
+            "data": geo_speed_for_bounds(north_east, south_west, args.granularity, intersect)
         }
 
 
