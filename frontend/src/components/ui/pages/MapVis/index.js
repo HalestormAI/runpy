@@ -7,6 +7,7 @@ import {
     loadStats,
     selectGeoSpeeds,
     selectMapState,
+    setInitialMapPosition,
     updateMapBounds,
     updateMapViewport,
     updateOptionState
@@ -17,6 +18,7 @@ import HeatmapLayer from "react-leaflet-heatmap-layer/lib/HeatmapLayer";
 import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import LoadingSpinner from "../../loadingSpinner";
 
 const {BaseLayer, Overlay} = LayersControl;
 
@@ -63,8 +65,16 @@ export default function MapVisPage(props) {
     };
 
     useEffect(() => {
-        updateData(mapRef.current.leafletElement.getBounds());
-    }, []);
+        if (mapState.viewport.center !== null) {
+            updateData(mapRef.current.leafletElement.getBounds());
+        }
+    }, [mapState.viewport.center]);
+
+    useEffect(() => {
+        if (mapState.viewport.center === null) {
+            dispatch(setInitialMapPosition());
+        }
+    }, [mapState.viewport.center]);
 
     const onViewportChanged = (viewport) => {
         dispatch(updateMapViewport(viewport));
@@ -103,35 +113,41 @@ export default function MapVisPage(props) {
 
     return (
         <React.Fragment>
-            <MapOptions optionsChanged={mapOptionsChanged}/>
-            <Map
-                onViewportChanged={onViewportChanged}
-                viewport={mapState.viewport}
-                ref={mapRef}>
-                <LayersControl>
-                    <BaseLayer name='OSM' checked>
-                        <TileLayer
-                            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                    </BaseLayer>
-                    <BaseLayer name='Ordnance Survey'>
-                        <BingLayer bingkey={config.api_keys.bing_maps} type="OrdnanceSurvey"/>
-                    </BaseLayer>
+            {mapState.viewport.center !== null ? (
+                <React.Fragment>
+                    <MapOptions optionsChanged={mapOptionsChanged}/>
+                    <Map
+                        onViewportChanged={onViewportChanged}
+                        viewport={mapState.viewport}
+                        ref={mapRef}>
+                        <LayersControl>
+                            <BaseLayer name='OSM' checked>
+                                <TileLayer
+                                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                            </BaseLayer>
+                            <BaseLayer name='Ordnance Survey'>
+                                <BingLayer bingkey={config.api_keys.bing_maps} type="OrdnanceSurvey"/>
+                            </BaseLayer>
 
-                    <Overlay name='Pace Heatmap' checked>
-                        <HeatmapLayer
-                            blur={zoomedRadius / 1.5}
-                            radius={zoomedRadius}
-                            points={points}
-                            gradient={hmGrad}
-                            minOpacity={0.1}
-                            longitudeExtractor={m => m[1]}
-                            latitudeExtractor={m => m[0]}
-                            intensityExtractor={m => parseFloat(2 * m[2])}/>
-                    </Overlay>
-                </LayersControl>
-            </Map>
+                            <Overlay name='Pace Heatmap' checked>
+                                <HeatmapLayer
+                                    blur={zoomedRadius / 1.5}
+                                    radius={zoomedRadius}
+                                    points={points}
+                                    gradient={hmGrad}
+                                    minOpacity={0.1}
+                                    longitudeExtractor={m => m[1]}
+                                    latitudeExtractor={m => m[0]}
+                                    intensityExtractor={m => parseFloat(2 * m[2])}/>
+                            </Overlay>
+                        </LayersControl>
+                    </Map>
+                </React.Fragment>
+            ) : (
+                <LoadingSpinner/>
+            )}
         </React.Fragment>
     )
 }

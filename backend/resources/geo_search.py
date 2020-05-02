@@ -33,7 +33,7 @@ class GeoAveragePosition(Resource):
 
     def get(self):
         return {
-            "data": filtered_average_position()
+            "position": filtered_average_position()["avg_pos"]
         }
 
 

@@ -7,12 +7,6 @@ import {call} from "../../../../utils/api";
 
 export const defaultZoom = 15;
 
-// TODO: Get shot of this:
-const DEFAULT_VIEWPORT = {
-    center: [51.49686, -2.54510],
-    zoom: defaultZoom,
-};
-
 const queryParams = (optionState) => {
     return Object.entries(optionState)
         .map((key) => `${encodeURIComponent(key[0])}=${encodeURIComponent(key[1])}`)
@@ -24,7 +18,10 @@ export const slice = createSlice({
     initialState: {
         latLngSpeeds: {points: [], stats: null},
         map: {
-            viewport: DEFAULT_VIEWPORT,
+            viewport: {
+                center: null,
+                zoom: defaultZoom,
+            },
             bounds: null,
             options: {
                 intersect: false,
@@ -68,12 +65,24 @@ export const slice = createSlice({
                 ...state.map.options,
                 ...action.payload
             };
+        },
+        setMapCentre: (state, action) => {
+            state.map.viewport.center = action.payload.position;
         }
     }
 });
 
 
-export const {updateMapBounds, updateMapViewport, searchFetch, searchDone, searchSuccess, searchError, updateOptionState} = slice.actions;
+export const {
+    updateMapBounds,
+    updateMapViewport,
+    searchFetch,
+    searchDone,
+    searchSuccess,
+    searchError,
+    updateOptionState,
+    setMapCentre
+} = slice.actions;
 
 export const loadStats = () => (dispatch, getState) => {
     const state = getState().mapsApi;
@@ -85,11 +94,15 @@ export const loadStats = () => (dispatch, getState) => {
     const sw = state.map.bounds.sw;
     let url = `/geo/speed/${ne.lng},${ne.lat}/${sw.lng},${sw.lat}`;
     url += "?" + queryParams(state.map.options);
-    console.log(url)
 
     dispatch(searchFetch());
     call(dispatch, url, searchDone, searchSuccess, searchError)
 };
+
+export const setInitialMapPosition = () => (dispatch, getState) => {
+    const url = "/geo/average-position"
+    call(dispatch, url, searchDone, setMapCentre, searchError())
+}
 
 export default slice.reducer;
 export const selectMapState = state => state.mapsApi.map;
