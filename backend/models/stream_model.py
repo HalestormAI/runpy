@@ -47,5 +47,13 @@ class ActivityStreamModel(StravaConnectedObject):
         }
 
     @staticmethod
+    def empty_doc(activity_id):
+        return {
+            "activity_id": int(activity_id),
+            "data": {},
+            "fetch_date": datetime.now()
+        }
+
+    @staticmethod
     def exists(collection, activity_id):
         return collection.count_documents({"id": int(activity_id)}, limit=1) > 0

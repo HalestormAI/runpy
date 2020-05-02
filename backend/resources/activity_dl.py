@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_restful import Api
 from flask_restful import Resource
 
@@ -22,7 +22,8 @@ class ActivityDownload(Resource):
             activities = activity_downloader.download()
             gear = gear_downloader.download()
             streams = streams_downloader.download()
-            return {
+
+            return jsonify({
                 "status": "done",
                 "message": "Done",
                 "downloaded": {
@@ -30,7 +31,7 @@ class ActivityDownload(Resource):
                     "gear": gear,
                     "streams": streams
                 }
-            }
+            })
         except AuthenticationError as err:
             return {
                 "status": "error",
@@ -49,13 +50,13 @@ class ActivityStreamsDownload(Resource):
         streams_downloader = DownloaderFactory.get(ActivityStreamDownloader)
         try:
             streams = streams_downloader.download()
-            return {
+            return jsonify({
                 "status": "done",
                 "message": "Done",
                 "downloaded": {
                     "streams": streams
                 }
-            }
+            })
         except AuthenticationError as err:
             return {
                 "status": "error",
@@ -85,16 +86,16 @@ class CleanActivities(Resource):
             }
 
 
-class StreamFetch(Resource):
+class SingleStreamFetch(Resource):
     def get(self, activity_id):
         stream_model = ActivityStreamModel(Config.get_instance())
         try:
             streams = stream_model.get(activity_id)
-            return {
+            return jsonify({
                 "status": "done",
                 "message": "Done",
                 "streams": streams
-            }
+            })
         except AuthenticationError as err:
             return {
                 "status": "error",
@@ -113,5 +114,5 @@ def blueprint(app):
     api.add_resource(ActivityDownload, '/data/fetch/activities')
     api.add_resource(ActivityStreamsDownload, '/data/fetch/streams')
     api.add_resource(CleanActivities, '/data/clear/activities')
-    api.add_resource(StreamFetch, '/data/fetch/stream/<string:activity_id>')
+    api.add_resource(SingleStreamFetch, '/data/fetch/stream/<string:activity_id>')
     app.register_blueprint(api_bp, url_prefix=Config.get_instance()["server"]["v1_api"])

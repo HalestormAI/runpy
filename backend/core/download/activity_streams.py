@@ -59,12 +59,14 @@ class ActivityStreamDownloader(AbstractDownloader):
                 try:
                     streams_data = self.client.get_activity_streams(a['id'], self.athlete_id)
                     stream_model = ActivityStreamModel.doc_from_strava(a['id'], streams_data)
+                    downloaded_streams.append({**stream_model})
                     download_buffer.add(stream_model)
-                    downloaded_streams.append(stream_model)
                     self.progress.next()
                 except ApiException as err:
                     if err.status == 404:
                         self.progress.log(f"No streams available for activity {a['id']}")
+                        stream_model = ActivityStreamModel.empty_doc(a['id'])
+                        download_buffer.add(stream_model)
                         continue
                     raise err
         finally:
