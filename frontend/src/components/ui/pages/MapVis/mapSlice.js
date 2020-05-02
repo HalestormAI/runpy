@@ -123,11 +123,11 @@ export const bingLocationSearch = searchValue => (dispatch, getState) => {
         .then(response => response.json())
         .then(data => {
             if (data.authenticationResultCode !== "ValidCredentials") {
-                throw "Access denied - is the Bing API key correct?";
+                throw new Error("Access denied - is the Bing API key correct?");
             }
             if (data.resourceSets[0].resources.length === 0) {
                 // TODO: This should have a proper handler
-                throw "No results found";
+                throw new Error("No results found");
             }
 
             const location = data.resourceSets[0].resources[0].point.coordinates;
