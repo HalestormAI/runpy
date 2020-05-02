@@ -1,6 +1,8 @@
+import logging
 from ..config import Config
 from ..connection import StravaConnectedObject
 
+logger = logging.getLogger("runpy.downloader")
 
 class DownloaderFactory():
     downloaders = {}
@@ -54,6 +56,9 @@ class ProgressStatus(object):
         self._num = -1
         self._current = -1
         self._running = False
+
+        for l in self._log:
+            logger.info(l)
 
     @property
     def running(self):
