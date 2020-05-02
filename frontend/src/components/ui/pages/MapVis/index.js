@@ -1,8 +1,9 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {LayersControl, Map, TileLayer} from "react-leaflet"
 import {BingLayer} from "react-leaflet-bing-v2"
 import config from "../../../../app/config/config";
 import {
+    bingLocationSearch,
     defaultZoom,
     loadStats,
     selectGeoSpeeds,
@@ -19,13 +20,63 @@ import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import LoadingSpinner from "../../loadingSpinner";
+import InputBase from "@material-ui/core/InputBase";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
+import SearchIcon from '@material-ui/icons/Search';
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Grid from "@material-ui/core/Grid";
 
 const {BaseLayer, Overlay} = LayersControl;
+
+function LocationSearchField(props) {
+    const {onPerformSearch} = props
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            padding: '2px 4px',
+            display: 'flex',
+            alignItems: 'center',
+            width: 400,
+        },
+        input: {
+            marginLeft: theme.spacing(1),
+            flex: 1,
+        }
+    }));
+
+    const classes = useStyles();
+    const [state, setState] = useState({fieldValue: ""})
+
+    const handleKeyPress = event => {
+        setState({...state, fieldValue: event.target.value});
+
+        if (event.key === "Enter") {
+            onPerformSearch(state.fieldValue);
+        }
+    }
+
+    return (
+        <Paper className={classes.root}>
+            <InputBase
+                className={classes.input}
+                placeholder="Search Location"
+                inputProps={{'aria-label': 'search location'}}
+                onKeyUp={handleKeyPress}
+            />
+            <IconButton type="submit" className={classes.iconButton}
+                        aria-label="search"
+                        onClick={() => onPerformSearch(state.fieldValue)}>
+                <SearchIcon/>
+            </IconButton>
+        </Paper>
+    )
+}
 
 function MapOptions(props) {
 
     const {optionsChanged} = props;
     const optionState = useSelector(selectMapState).options;
+    // const locationSearchState = useSelector(selectLocationSearch);
     const dispatch = useDispatch();
 
     const setIntersect = (event) => {
@@ -36,6 +87,10 @@ function MapOptions(props) {
     const setGranularity = (event) => {
         dispatch(updateOptionState({granularity: event.target.checked ? 4 : 3}));
         optionsChanged();
+    };
+
+    const performLocationSearch = (searchValue) => {
+        dispatch(bingLocationSearch(searchValue));
     };
 
     return (
@@ -49,6 +104,7 @@ function MapOptions(props) {
                                  name="intersectionSwitch"/>}
                 label="High resolution"
             />
+            <LocationSearchField onPerformSearch={performLocationSearch}/>
         </FormGroup>
     )
 }
@@ -112,42 +168,46 @@ export default function MapVisPage(props) {
     zoomedRadius = Math.max(Math.min(zoomedRadius, 30), 1)
 
     return (
-        <React.Fragment>
-            {mapState.viewport.center !== null ? (
-                <React.Fragment>
-                    <MapOptions optionsChanged={mapOptionsChanged}/>
-                    <Map
-                        onViewportChanged={onViewportChanged}
-                        viewport={mapState.viewport}
-                        ref={mapRef}>
-                        <LayersControl>
-                            <BaseLayer name='OSM' checked>
-                                <TileLayer
-                                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                />
-                            </BaseLayer>
-                            <BaseLayer name='Ordnance Survey'>
-                                <BingLayer bingkey={config.api_keys.bing_maps} type="OrdnanceSurvey"/>
-                            </BaseLayer>
+        <Grid container className="" spacing={2}>
+            <Grid item xs={12}>
+                <MapOptions optionsChanged={mapOptionsChanged}/>
+            </Grid>
+            <Grid item xs={12}>
+                {mapState.viewport.center !== null ? (
+                    <React.Fragment>
+                        <Map
+                            onViewportChanged={onViewportChanged}
+                            viewport={mapState.viewport}
+                            ref={mapRef}>
+                            <LayersControl>
+                                <BaseLayer name='OSM' checked>
+                                    <TileLayer
+                                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                </BaseLayer>
+                                <BaseLayer name='Ordnance Survey'>
+                                    <BingLayer bingkey={config.api_keys.bing_maps} type="OrdnanceSurvey"/>
+                                </BaseLayer>
 
-                            <Overlay name='Pace Heatmap' checked>
-                                <HeatmapLayer
-                                    blur={zoomedRadius / 1.5}
-                                    radius={zoomedRadius}
-                                    points={points}
-                                    gradient={hmGrad}
-                                    minOpacity={0.1}
-                                    longitudeExtractor={m => m[1]}
-                                    latitudeExtractor={m => m[0]}
-                                    intensityExtractor={m => parseFloat(2 * m[2])}/>
-                            </Overlay>
-                        </LayersControl>
-                    </Map>
-                </React.Fragment>
-            ) : (
-                <LoadingSpinner/>
-            )}
-        </React.Fragment>
+                                <Overlay name='Pace Heatmap' checked>
+                                    <HeatmapLayer
+                                        blur={zoomedRadius / 1.5}
+                                        radius={zoomedRadius}
+                                        points={points}
+                                        gradient={hmGrad}
+                                        minOpacity={0.1}
+                                        longitudeExtractor={m => m[1]}
+                                        latitudeExtractor={m => m[0]}
+                                        intensityExtractor={m => parseFloat(2 * m[2])}/>
+                                </Overlay>
+                            </LayersControl>
+                        </Map>
+                    </React.Fragment>
+                ) : (
+                    <LoadingSpinner/>
+                )}
+            </Grid>
+        </Grid>
     )
 }

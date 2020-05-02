@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {call} from "../../../../utils/api";
+import config from "../../../../app/config/config.json";
 
 // TODO: This is quite similar to the searchAPISlice -> All of this needs a redesign to reduce duplication
 //       Decided to have this separate to the search form as both might want to be populated at once, and they're
@@ -112,6 +113,27 @@ export const setInitialMapPosition = () => (dispatch, getState) => {
     window.navigator.geolocation
         .getCurrentPosition(successCb, errorCb);
 
+}
+
+export const bingLocationSearch = searchValue => (dispatch, getState) => {
+    const api_key = config.api_keys.bing_maps;
+    searchValue = encodeURIComponent(searchValue);
+    const url = `http://dev.virtualearth.net/REST/v1/Locations?query=${searchValue}&maxResults=1&key=${api_key}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.authenticationResultCode !== "ValidCredentials") {
+                throw "Access denied - is the Bing API key correct?";
+            }
+            if (data.resourceSets[0].resources.length === 0) {
+                // TODO: This should have a proper handler
+                throw "No results found";
+            }
+
+            const location = data.resourceSets[0].resources[0].point.coordinates;
+            dispatch(setMapCentre({position: location}));
+        })
+        .catch(err => console.error(err))
 }
 
 export default slice.reducer;
