@@ -3,7 +3,7 @@ from flask_restful import Api, Resource, reqparse
 
 from backend.core.config import Config
 from backend.core.utils import str_arg_is_true
-from backend.models.geo_pace import GeoSpeedModel
+from backend.models.geo_speed_model import GeoSpeedModel
 
 
 class GeoSpeedForBounds(Resource):
