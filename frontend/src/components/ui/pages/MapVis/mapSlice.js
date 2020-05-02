@@ -6,6 +6,8 @@ import {call} from "../../../../utils/api";
 //       independent of each other, despite having similar API functionality
 
 export const defaultZoom = 15;
+// If we can't get the user's location, initialise the map at stonehenge, because it's cool.
+const backupLocation = [51.1789, -1.8262];
 
 const queryParams = (optionState) => {
     return Object.entries(optionState)
@@ -100,8 +102,16 @@ export const loadStats = () => (dispatch, getState) => {
 };
 
 export const setInitialMapPosition = () => (dispatch, getState) => {
-    const url = "/geo/average-position"
-    call(dispatch, url, searchDone, setMapCentre, searchError())
+    const successCb = (obj) => {
+        dispatch(setMapCentre({position: [obj.coords.latitude, obj.coords.longitude]}))
+    }
+    const errorCb = (obj) => {
+        console.error("Couldn't retrieve user location", obj);
+        dispatch(setMapCentre({position: backupLocation}))
+    }
+    window.navigator.geolocation
+        .getCurrentPosition(successCb, errorCb);
+
 }
 
 export default slice.reducer;
