@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import {loadStats, selectActivities, selectOptions, updateOptionState} from './temporalStatsSlice'
 import Plot from "react-plotly.js";
 import {useTheme} from "@material-ui/core/styles";
@@ -10,6 +9,7 @@ import {speedToPaceMS} from "../../../../utils/ui";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import LoadingSpinner from "../../loadingSpinner";
 
 // TODO: Extract similarities between plots
 function ErrorBarTemporalPlot(props) {
@@ -174,7 +174,7 @@ export default function TemporalStatsPage(props) {
                     </React.Fragment>
                 ) :
                 <React.Fragment>
-                    <CircularProgress/>
+                    <LoadingSpinner/>
                 </React.Fragment>}
         </React.Fragment>
     )
