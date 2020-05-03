@@ -1,8 +1,8 @@
 import moment from "moment";
 
 function descendingComparator(a, b, orderBy) {
-    a = moment.isDate(a) ? new Date(a) : a;
-    b = moment.isDate(b) ? new Date(b) : b;
+    a[orderBy] = moment.isDate(a[orderBy]) ? new Date(a[orderBy]) : a[orderBy];
+    b[orderBy] = moment.isDate(b[orderBy]) ? new Date(b[orderBy]) : b[orderBy];
 
     if (b[orderBy] < a[orderBy]) {
         return -1;
