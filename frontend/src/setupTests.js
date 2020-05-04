@@ -4,15 +4,18 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 
-import { enableFetchMocks } from 'jest-fetch-mock'
-enableFetchMocks()
-
 import 'jest-canvas-mock';
-window.URL.createObjectURL = function() {};
-
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
-Enzyme.configure({ adapter: new Adapter() });
-
 import 'jest-enzyme';
+import 'jest-localstorage-mock';
+import {enableFetchMocks} from 'jest-fetch-mock'
+
+enableFetchMocks()
+
+window.URL.createObjectURL = function () {
+};
+
+Enzyme.configure({adapter: new Adapter()});
+
+

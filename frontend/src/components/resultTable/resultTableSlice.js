@@ -1,20 +1,21 @@
 import {createSlice} from "@reduxjs/toolkit";
 
+export const initialState = {
+    table: {
+        pagination: {
+            rowsPerPage: parseInt(localStorage.getItem("resultTable.rowsPerPage"), 10) || 25,
+            page: 0,
+        },
+        ordering: {
+            order: 'desc',
+            orderBy: 'start_date'
+        }
+    }
+}
 
 export const slice = createSlice({
     name: 'searchData',
-    initialState: {
-        table: {
-            pagination: {
-                rowsPerPage: parseInt(localStorage.getItem("resultTable.rowsPerPage"), 10) || 25,
-                page: 0,
-            },
-            ordering: {
-                order: 'desc',
-                orderBy: 'start_date'
-            }
-        }
-    },
+    initialState,
     reducers: {
         setRowsPerPage: (state, action) => {
             state.table.pagination.rowsPerPage = action.payload;
