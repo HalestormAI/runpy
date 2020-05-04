@@ -1,11 +1,5 @@
 import {defaultPlotLayout, initialPlotState} from "../plot";
-
-const randomString = () => Math.random()
-    .toString(36)
-    .substring(2, 15) + Math.random()
-    .toString(36)
-    .substring(2, 15);
-
+import {randomString} from "../../test-utils";
 
 describe("Helper functions for plotting from the plot module", () => {
 
