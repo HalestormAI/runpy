@@ -24,7 +24,7 @@ describe("testing functions used for ui text formatting", () => {
         ${1}       | ${'16:40'} | ${false}
         ${2.5}     | ${'06:40'} | ${false}
         ${5}       | ${'03:20'} | ${false}
-        ${0}       | ${'N/A'}   | ${true}
+        ${0}       | ${NaN}     | ${false}
         ${-1}      | ${'N/A'}   | ${true}
     `("should speed in m/s to a zero-padded M:S string showing pace in mins/km", ({speed, expected, shouldThrow}) => {
         if (!shouldThrow) {
