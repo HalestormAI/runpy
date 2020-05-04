@@ -20,15 +20,17 @@ function buildSearchUrl(state) {
     return builder(state.searchForm.values);
 }
 
+export const initialState = {
+    activities: [],
+    data: {
+        errorMessage: null,
+        waiting: false
+    }
+};
+
 export const slice = createSlice({
     name: 'searchData',
-    initialState: {
-        activities: [],
-        data: {
-            errorMessage: null,
-            waiting: false
-        }
-    },
+    initialState,
     reducers: {
         searchFetch: state => {
             state.data.waiting = true;

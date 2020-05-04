@@ -1,15 +1,16 @@
 import {createSlice} from "@reduxjs/toolkit";
 
+export const initialState = {
+    type: "distance",
+    values: {
+        low: "",
+        high: ""
+    }
+};
 
 export const slice = createSlice({
     name: 'searchData',
-    initialState: {
-        type: "distance",
-        values: {
-            low: "",
-            high: ""
-        }
-    },
+    initialState,
     reducers: {
         updateLow: (state, action) => {
             state.values.low = action.payload

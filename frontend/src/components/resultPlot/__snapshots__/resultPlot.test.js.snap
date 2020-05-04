@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`the result plot component no activities should render 1`] = `
+<PlotlyComponent
+  data={
+    Array [
+      Object {
+        "mode": "markers",
+        "text": Array [],
+        "transforms": Array [
+          Object {
+            "groups": Array [],
+            "type": "groupby",
+          },
+        ],
+        "type": "scatter",
+        "x": Array [],
+        "y": Array [],
+      },
+    ]
+  }
+  debug={false}
+  layout={
+    Object {
+      "autosize": true,
+      "font": Object {
+        "color": "rgba(0, 0, 0, 0.87)",
+      },
+      "paper_bgcolor": "#fff",
+      "plot_bgcolor": "#fff",
+      "responsize": true,
+      "title": "Pace (mins/km) over time 0.00km ... 0.00km",
+      "xaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%Y-%m-%d",
+        "zerolinecolor": "#fafafa",
+      },
+      "yaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%M:%S",
+        "zerolinecolor": "#fafafa",
+      },
+    }
+  }
+  onInitialized={[Function]}
+  onUpdate={[Function]}
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+  useResizeHandler={true}
+/>
+`;
+
+exports[`the result plot component some activities should render 1`] = `
+<PlotlyComponent
+  data={
+    Array [
+      Object {
+        "mode": "markers",
+        "text": Array [
+          "[Invalid Date] undefined (NaNkm)",
+          "[Invalid Date] undefined (NaNkm)",
+          "[Invalid Date] undefined (NaNkm)",
+        ],
+        "transforms": Array [
+          Object {
+            "groups": Array [
+              undefined,
+              undefined,
+              undefined,
+            ],
+            "type": "groupby",
+          },
+        ],
+        "type": "scatter",
+        "x": Array [
+          "1,588,634,468,124",
+          "1,588,634,468,136",
+          "1,588,634,468,136",
+        ],
+        "y": Array [
+          "2020-01-01 00:04:30",
+          "2020-01-01 00:05:05",
+          "2020-01-01 00:04:57",
+        ],
+      },
+    ]
+  }
+  debug={false}
+  layout={
+    Object {
+      "autosize": true,
+      "font": Object {
+        "color": "rgba(0, 0, 0, 0.87)",
+      },
+      "paper_bgcolor": "#fff",
+      "plot_bgcolor": "#fff",
+      "responsize": true,
+      "title": "Pace (mins/km) over time 0.00km ... 0.00km",
+      "xaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%Y-%m-%d",
+        "zerolinecolor": "#fafafa",
+      },
+      "yaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%M:%S",
+        "zerolinecolor": "#fafafa",
+      },
+    }
+  }
+  onInitialized={[Function]}
+  onUpdate={[Function]}
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+  useResizeHandler={true}
+/>
+`;
