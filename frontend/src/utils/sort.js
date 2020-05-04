@@ -1,13 +1,15 @@
 import moment from "moment";
 
-function descendingComparator(a, b, orderBy) {
-    a[orderBy] = moment.isDate(a[orderBy]) ? new Date(a[orderBy]) : a[orderBy];
-    b[orderBy] = moment.isDate(b[orderBy]) ? new Date(b[orderBy]) : b[orderBy];
+export const isDate = (str) => moment(str, "YYYY-MM-DDTHH:mm:ssZ", true).isValid();
 
-    if (b[orderBy] < a[orderBy]) {
+function descendingComparator(a, b, orderBy) {
+    const elemA = isDate(a[orderBy]) ? new Date(a[orderBy]) : a[orderBy];
+    const elemB = isDate(b[orderBy]) ? new Date(b[orderBy]) : b[orderBy];
+
+    if (elemB < elemA) {
         return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if (elemB > elemA) {
         return 1;
     }
     return 0;
