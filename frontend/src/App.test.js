@@ -1,5 +1,6 @@
 import React from 'react';
-import {shallow, mount} from 'enzyme';
+import {shallow} from 'enzyme';
+import {useSelector} from "react-redux";
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk';
 import App from "./App";
@@ -10,14 +11,7 @@ jest.mock('react-redux', () => ({
     useSelector: jest.fn(),
     useDispatch: () => jest.fn()
 }));
-//
-// jest.mock('./components/ui/themeSlice', () => ({
-//     selectDarkMode: x => (x),
-//     selectDmMediaQueryState: x => x,
-//     updateMediaQueryState: () => {}
-// }));
 
-import {useDispatch, useSelector} from "react-redux";
 
 const mockAppState = {
     uiTheme: {
