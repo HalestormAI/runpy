@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import Plot from 'react-plotly.js';
 import {useSelector} from "react-redux";
+import {useTheme} from '@material-ui/core/styles';
+import {selectFormState} from "../search/searchUiSlice";
 import {selectActivities} from "../search/searchApiSlice";
 import {getComparator, stableSort} from "../../utils/sort"
 import {distanceFormat, speedToPaceMS} from "../../utils/ui";
-import config from "../../app/config/config";
-import {selectFormState} from "../search/searchUiSlice";
-import {useTheme} from '@material-ui/core/styles';
 import {defaultPlotLayout, initialPlotState} from "../../utils/plot";
+import config from "../../app/config/config";
 
 
 function createData(activities) {
