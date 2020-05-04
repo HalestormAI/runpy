@@ -39,7 +39,7 @@ describe('slice for the results table', () => {
         const newOrdering = {
             order: randomString(),
             orderBy: randomString()
-        }
+        };
         const pageNum = Math.round(20 * Math.random());
         const nextState = reducer(initialState, setOrdering(newOrdering));
 

@@ -1,17 +1,12 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {useSelector} from "react-redux";
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk';
 import App from "./App";
-
-const mockStore = configureMockStore([thunk]);
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn(),
     useDispatch: () => jest.fn()
 }));
-
 
 const mockAppState = {
     uiTheme: {
