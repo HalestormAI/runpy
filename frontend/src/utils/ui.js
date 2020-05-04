@@ -15,8 +15,11 @@ export function secondsToHMS(seconds) {
 }
 
 export function speedToPaceMS(speed) {
-    if (speed <= 0) {
+    if (speed < 0) {
         throw new Error("Speed must be greater than 0.");
+    }
+    if (speed === 0) {
+        return NaN;
     }
 
     const x = 1 / (0.06 * speed);

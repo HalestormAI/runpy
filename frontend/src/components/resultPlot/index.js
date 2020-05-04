@@ -11,6 +11,7 @@ import {defaultPlotLayout, initialPlotState} from "../../utils/plot";
 
 
 function createData(activities) {
+    activities = activities.filter(a => a.average_speed > 0);
     const workoutTypes = ["Run", "Race", "Long Run", "Workout"];
     const sorted = stableSort(activities, getComparator("asc", "start_date"));
     const raceGroups = sorted
