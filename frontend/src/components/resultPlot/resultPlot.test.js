@@ -1,7 +1,7 @@
 import React from "react";
 import Plot from 'react-plotly.js';
 import {shallow} from 'enzyme'
-import SearchResultPlotComponent from "./index";
+import SearchResultPlotComponent, {updatePlotState} from "./index";
 import {useSelector} from "react-redux";
 import {initialState as uiInitialState, selectFormState} from "../search/searchUiSlice";
 import {selectActivities} from "../search/searchApiSlice";
@@ -117,6 +117,62 @@ describe("the result plot component", () => {
             expect(props.layout.title).toEqual("Pace (mins/km) over time 0.00km ... 0.00km");
             expect(props.layout.yaxis.tickformat).toEqual("%M:%S");
             expect(props.layout.xaxis.tickformat).toEqual("%Y-%m-%d");
+        });
+
+        it('should update the state when update fires', () => {
+            const mockTitle = randomString();
+
+            const mockState = {
+                layout: {
+                    initial: "layoutValue",
+                    overwriteme: "original"
+                },
+                config: {},
+                frames: {}
+            }
+
+            const mockLayoutMemo = {
+                yaxis: {
+                    tickformat: "%M:%S"
+                },
+                xaxis: {
+                    tickformat: "%Y-%m-%d"
+                }
+            };
+
+            const mockFig = {
+                layout: {
+                    title: mockTitle,
+                    overwriteme: "overwriteme"
+                },
+                config: {
+                    configKey: "configValue"
+                },
+                frames: {
+                    framesKey: "framesValue"
+                }
+            };
+
+            expect(mockState.layout.initial).toEqual("layoutValue");
+            expect(mockState.layout.overwriteme).toEqual("original");
+            expect(mockState.layout).not.toHaveProperty("title");
+            expect(mockState.layout).not.toHaveProperty("yaxis");
+            expect(mockState.layout).not.toHaveProperty("xaxis");
+            expect(mockState.config).toEqual({});
+            expect(mockState.frames).toEqual({});
+
+            const setState = jest.fn(newState => {
+                console.log(newState)
+                expect(newState.layout.initial).toEqual("layoutValue");
+                expect(newState.layout.overwriteme).toEqual("overwriteme");
+                expect(newState.layout.title).toEqual(mockTitle);
+                expect(newState.layout.yaxis.tickformat).toEqual(mockLayoutMemo.yaxis.tickformat);
+                expect(newState.layout.xaxis.tickformat).toEqual(mockLayoutMemo.xaxis.tickformat);
+                expect(newState.config.configKey).toEqual("configValue");
+                expect(newState.frames.framesKey).toEqual("framesValue");
+            })
+
+            updatePlotState(mockState, setState, mockFig, mockLayoutMemo);
         });
     });
 

@@ -34,6 +34,17 @@ function createData(activities) {
     }
 }
 
+export const updatePlotState = (state, setState, fig, layoutMemo) => {
+    state.layout = {
+        ...state.layout,
+        ...fig.layout,
+        ...layoutMemo,
+    };
+    state.config = {...fig.config};
+    state.frames = {...fig.frames};
+    setState(state);
+};
+
 export default function SearchResultPlotComponent() {
     const searchState = useSelector(selectFormState);
     const activities = useSelector(selectActivities);
@@ -52,16 +63,6 @@ export default function SearchResultPlotComponent() {
     const initialState = initialPlotState(layoutMemo);
     const [state, setState] = useState(initialState);
 
-    const updateState = (fig) => {
-        state.layout = {
-            ...fig.layout,
-            ...layoutMemo,
-        };
-        state.config = {...fig.config};
-        state.frames = {...fig.frames};
-        setState(state);
-    };
-
     return (
         <div style={{width: '100%'}}>
             <Plot
@@ -70,7 +71,7 @@ export default function SearchResultPlotComponent() {
                 data={[createData(activities)]}
                 layout={state.layout}
                 onInitialized={(figure) => setState(figure)}
-                onUpdate={(figure) => updateState(figure)}
+                onUpdate={(figure) => updatePlotState(state, setState, figure, layoutMemo)}
             />
         </div>
     );
