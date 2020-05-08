@@ -1,11 +1,11 @@
 import React from "react";
-import Plot from 'react-plotly.js';
+import Plot from '../../../../node_modules/react-plotly.js/react-plotly';
 import {shallow} from 'enzyme'
-import SearchResultPlotComponent, {updatePlotState} from "./index";
+import SearchResultPlotComponent, {updatePlotState} from "../index";
 import {useSelector} from "react-redux";
-import {initialState as uiInitialState, selectFormState} from "../search/searchUiSlice";
-import {selectActivities} from "../search/searchApiSlice";
-import {randomString} from "../../test-utils";
+import {initialState as uiInitialState, selectFormState} from "../../search/searchUiSlice";
+import {selectActivities} from "../../search/searchApiSlice";
+import {randomString} from "../../../test-utils";
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn(),

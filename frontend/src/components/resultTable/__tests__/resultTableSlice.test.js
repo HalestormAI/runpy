@@ -1,5 +1,5 @@
-import reducer, {initialState, selectTableState, setOrdering, setPage, setRowsPerPage} from './resultTableSlice';
-import {randomString} from "../../test-utils";
+import reducer, {initialState, selectTableState, setOrdering, setPage, setRowsPerPage} from '../resultTableSlice';
+import {randomString} from "../../../test-utils";
 
 describe('slice for the results table', () => {
 
