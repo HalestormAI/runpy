@@ -5,12 +5,14 @@ import {useTheme} from '@material-ui/core/styles';
 import {selectFormState} from "../search/searchUiSlice";
 import {selectActivities} from "../search/searchApiSlice";
 import {getComparator, stableSort} from "../../utils/sort"
-import {distanceFormat, speedToPaceMS} from "../../utils/ui";
+import {dateFormat, distanceFormat, speedToPaceMS} from "../../utils/ui";
 import {defaultPlotLayout, initialPlotState} from "../../utils/plot";
-import config from "../../app/config/config";
 
+export function formatActivityText(a) {
+    return `[${dateFormat(a.start_date)}] ${a.name} (${distanceFormat(a.distance)}km)`;
+}
 
-function createData(activities) {
+export function createData(activities) {
     activities = activities.filter(a => a.average_speed > 0);
     const workoutTypes = ["Run", "Race", "Long Run", "Workout"];
     const sorted = stableSort(activities, getComparator("asc", "start_date"));
@@ -18,15 +20,12 @@ function createData(activities) {
         .map(a => (a.workout_type === null || a.workout_type === undefined) ? 0 : a.workout_type)
         .map(a => workoutTypes[a]);
 
-    const dateFormat = dateStr => new Date(dateStr).toLocaleDateString(config.locale);
-
     return {
         x: sorted.map(a => a.start_date),
         y: sorted.map(a => "2020-01-01 00:" + speedToPaceMS(a.average_speed)),
-        text: sorted.map(a => `[${dateFormat(a.start_date)}] ${a.name} (${distanceFormat(a.distance)}km)`),
+        text: sorted.map(formatActivityText),
         type: 'scatter',
         mode: 'markers',
-        // marker: {color: 'red'}
         transforms: [{
             type: "groupby",
             groups: raceGroups
