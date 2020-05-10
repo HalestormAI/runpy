@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import SearchIcon from '@material-ui/icons/Search';
 import {useDispatch, useSelector} from "react-redux";
-import {selectFormState} from "./searchUiSlice";
+import {isValidFormType, selectFormState} from "./searchUiSlice";
 import {performSearch, selectApiState} from "./searchApiSlice";
 import DistanceSearchFields from "./filterTypes/searchTypeDistance";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,10 +11,10 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {grey} from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-  },
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     wrapper: {
         // margin: theme.spacing(1),
         position: 'relative',
@@ -29,17 +29,29 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+export function SearchFormComponent(props) {
+    const {formType, registerValidationFields, updateValidationState} = props;
+    return (<React.Fragment>
+        {formType === "distance" &&
+        <DistanceSearchFields registerValidationFields={registerValidationFields}
+                              updateValidationState={updateValidationState}/>
+        }
+    </React.Fragment>)
+}
+
+export const formIsValid = state => Object.values(state)
+    .reduce((isValid, fieldValid) => isValid && fieldValid, true);
+
 export default function StravaSearchComponent() {
     const dispatch = useDispatch();
     const formState = useSelector(selectFormState);
     const apiState = useSelector(selectApiState);
 
     const [validState, setValidState] = React.useState({});
-    const formIsValid = () => Object.values(validState).reduce((isValid, fieldValid) => isValid && fieldValid, true);
 
     const handleSubmit = e => {
         e.preventDefault();
-        if (formIsValid()) {
+        if (formIsValid(validState)) {
             dispatch(performSearch());
         }
 
@@ -66,9 +78,11 @@ export default function StravaSearchComponent() {
                 <Grid item xs={1}>
                     Search:
                 </Grid>
-                {formState.type === "distance" &&
-                <DistanceSearchFields registerValidationFields={registerValidationFields}
-                                      updateValidationState={updateFieldValidation}/>
+
+                {isValidFormType(formState.type) &&
+                <SearchFormComponent formType={formState.type}
+                                     registerValidationFields={registerValidationFields}
+                                     updateValidationState={updateFieldValidation}/>
                 }
                 <Grid item xs={1} className={classes.root}>
                     <div className={classes.wrapper}>
@@ -78,10 +92,12 @@ export default function StravaSearchComponent() {
                             type="submit"
                             endIcon={<SearchIcon/>}
                             disabled={apiState.waiting}
+                            className="search-button"
                         >
                             Search
                         </Button>
-                        {apiState.waiting && <CircularProgress size={24} className={classes.buttonProgress} color="primary"/>}
+                        {apiState.waiting &&
+                        <CircularProgress size={24} className={classes.buttonProgress} color="primary"/>}
                     </div>
                 </Grid>
             </Grid>
