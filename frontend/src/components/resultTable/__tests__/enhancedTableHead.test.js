@@ -119,7 +119,7 @@ describe("the enhanced head component", () => {
             }
         };
 
-        cells.at(sortField.idx).simulate('click', mockClickData);
+        cells.at(sortField.idx).simulate("click", mockClickData);
 
         expect(handleRequestSort).toHaveBeenCalledTimes(1);
         expect(handleRequestSort).toHaveBeenLastCalledWith(mockClickData, sortField.id);

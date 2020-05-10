@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {useSelector} from "react-redux";
-import App from "./App";
+import App from "../App";
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn(),

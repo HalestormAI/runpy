@@ -18,4 +18,30 @@ window.URL.createObjectURL = function () {
 
 Enzyme.configure({adapter: new Adapter()});
 
+// https://stackoverflow.com/questions/57001262/jest-expect-only-unique-elements-in-an-array
+expect.extend({
+    toBeDistinct(received) {
+        // for efficiency, we'll perform a set check first which will catch non-unique literals
+        let allUnique = Array.isArray(received) && new Set(received).size === received.length;
 
+        if (allUnique) {
+            // Might still not be the case since set uses a shallow equality
+            // This is not a cheap operation, so we'll only do it when necessary
+            // https://stackoverflow.com/a/49050668/168735
+            const deepSet = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
+            allUnique &= Array.isArray(received) && deepSet(received).length === received.length
+        }
+
+        if (allUnique) {
+            return {
+                message: () => `[${received}] array contains only distinct values`,
+                pass: true,
+            };
+        } else {
+            return {
+                message: () => `expected [${received}] array to contain distinct values`,
+                pass: false,
+            };
+        }
+    },
+});
