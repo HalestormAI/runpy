@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 from .core.config import Config
 from .core.running_stats import register_handlers
-from .resources import activity_search, activity_dl, frontend, geo_search
+from .resources import activity_search, activity_dl, frontend, geo_search, aggregated_search
 
 logger = logging.getLogger("runpy")
 config = Config.get_instance()
@@ -31,6 +31,7 @@ def create_app(config_filename):
     activity_dl.blueprint(app)
     frontend.blueprint(app)
     geo_search.blueprint(app)
+    aggregated_search.blueprint(app)
     return app
 
 
