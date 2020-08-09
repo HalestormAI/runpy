@@ -6,6 +6,7 @@ from scipy import stats
 
 from backend.core import mongo
 
+
 class SearchTypes(Enum):
     DISTANCE = "distance"
     MOVING_TIME = "moving_time"
@@ -16,17 +17,18 @@ class SearchTypes(Enum):
 
 
 def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None, end_date=None):
-
     # Force the type argument to be a valid one (will except if not valid)
     if not isinstance(search_type, SearchTypes):
         search_type = SearchTypes(search_type)
 
     agg_query = [
         {
-            '$project': {
-                search_type.value: 1,
-                'id': 1,
-                'name': 1,
+            '$match': {
+                'type': 'Run'
+            }
+        },
+        {
+            '$addFields': {
                 'dt': {
                     '$dateFromString': {
                         'dateString': '$start_date'
@@ -36,8 +38,19 @@ def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None,
         }, {
             '$group': {
                 '_id': {
-                    'wk': {'$week': '$dt'},
+                    'wk': {'$isoWeek': '$dt'},
                     'yr': {'$year': '$dt'}
+                },
+                'runs': {
+                    '$push': {
+                        'id': '$id',
+                        'name': '$name',
+                        'date': '$start_date',
+                        'distance': '$distance',
+                        'time': '$moving_time',
+                        'speed': '$average_speed',
+                        'elevation': '$total_elevation_gain'
+                    }
                 },
                 'weekly_agg': {
                     '$sum': '$' + search_type.value
@@ -46,22 +59,26 @@ def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None,
         }
     ]
 
+    def maybe_convert_date(dt, fmt):
+        if dt is None:
+            return None
+
+        if isinstance(dt, datetime.datetime):
+            return dt
+
+        return datetime.datetime(dt, fmt)
+
     if start_date is not None or end_date is not None:
-        if start_date is not None and end_date is not None:
-            date_bounds_filter = {
-                '$and': {
-                    '$gte': datetime.datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S'),
-                    '$lte': datetime.datetime.strptime(end_date, '%Y-%m-%d %H:%M:%S')
-                }
-            }
-        elif start_date is not None:
-            date_bounds_filter = {'$gte': datetime.datetime.strptime(start_date, '%d/%m/%y %H:%M:%S')}
-        else:
-            date_bounds_filter = {'$lte': datetime.datetime.strptime(end_date, '%d/%m/%y %H:%M:%S')}
+        date_bounds_filter = {}
+
+        if start_date is not None:
+            date_bounds_filter['$gte'] = maybe_convert_date(start_date, '%d/%m/%y')
+        if end_date is not None:
+            date_bounds_filter['$lte'] = maybe_convert_date(end_date, '%d/%m/%y')
 
         agg_query.insert(1, {
             '$match': {
-                'dt': date_bounds_filter
+                "dt": date_bounds_filter
             }
         })
 
@@ -79,15 +96,15 @@ def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None,
         dt = datetime.datetime.strptime(f"{year}-W{week}-1", "%Y-W%W-%w")
         outputs.append({
             "date": dt,
-            "count": row["weekly_agg"]
+            "count": row["weekly_agg"],
+            "runs": row["runs"]
         })
 
     # Sort then convert datetime to string for output serialisation
     outputs = [{
         "date": v["date"].strftime("%Y-%m-%d"),
-        "count": v["count"]
+        "count": v["count"],
+        "runs": v["runs"]
     } for v in sorted(outputs, key=lambda item: item["date"])]
 
-    return {
-        "result": outputs
-    }
+    return outputs

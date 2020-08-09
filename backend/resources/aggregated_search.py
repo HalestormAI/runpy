@@ -4,7 +4,7 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
 
 from backend.core.config import Config
-from backend.models.aggregated_history import aggregated_weekly_history, SearchTypes
+from backend.models.aggregated_history import aggregated_weekly_history
 
 
 class AggregatedSearch(Resource):
@@ -13,9 +13,9 @@ class AggregatedSearch(Resource):
 
         def valid_date(dt):
             try:
-                return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+                return datetime.datetime.strptime(dt, "%Y-%m-%d")
             except ValueError:
-                msg = "Not a valid date: '{0}'.".format(s)
+                msg = "Not a valid date: '{0}'.".format(dt)
                 raise reqparse.ArgumentTypeError(msg)
 
         parser = reqparse.RequestParser()
