@@ -18,6 +18,28 @@ import TableBody from "@material-ui/core/TableBody";
 import {getComparator, stableSort} from "../../../../utils/sort";
 import config from "../../../../app/config/config";
 
+const ONE_WEEK = 60*60*24*7*1000;
+
+function rollingAverage(data, inputDate, windowSize=5) {
+    const dateIds = []
+
+    if (windowSize % 2 !== 1) {
+        windowSize += 1;
+    }
+
+    for (let i = -(windowSize-1)/2; i <= (windowSize-1)/2; i++) {
+        const dt = new Date(new Date(inputDate) - ONE_WEEK * i);
+        dateIds.push(dt.toISOString().split("T")[0])
+    }
+
+    // Missing dates essentially contribute 0, which is correct for all but the edge weeks
+    // which could do with some special handling...
+    return data
+        .filter(x => dateIds.includes(x.date))
+        .reduce((accl, item) => accl + item.count, 0) / windowSize;
+}
+
+
 // TODO: Extract similarities between plots
 function TemporalPlot(props) {
     const {data, title, primaryColour, secondaryColor, yaxis, clickHandler} = props;
@@ -48,6 +70,8 @@ function TemporalPlot(props) {
     const x_data = data.map(x => x["date"])
     const y_data = data.map(x => x["count"] / 1000)
 
+    const averages = data.map(x => rollingAverage(data, x.date, 9)/1000);
+
     const traces = [{
         x: x_data,
         y: y_data,
@@ -55,6 +79,15 @@ function TemporalPlot(props) {
         mode: 'lines',
         name: "Distance",
         fill: 'tozeroy',
+        type: "scatter",
+        connectgaps: false
+    },
+    {
+        x: x_data,
+        y: averages,
+        line: {color: secondaryColor},
+        mode: 'lines',
+        name: "RollingAverage",
         type: "scatter",
         connectgaps: false
     }]
@@ -132,7 +165,6 @@ function WeekDetails(props) {
     </React.Fragment>)
 }
 
-
 export default function WeeklyAggregationStatsPage(props) {
     const stats = useSelector(selectResult);
     const selectedWeek = useSelector(selectWeekDetails)
@@ -153,7 +185,6 @@ export default function WeeklyAggregationStatsPage(props) {
         dispatch(updateSelectedWeek(week));
     };
 
-    console.log(selectedWeek)
     return (
         <Grid container>
             {hasStats ? (
