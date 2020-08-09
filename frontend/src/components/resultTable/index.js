@@ -15,6 +15,16 @@ import {secondsToHMS, speedToPaceMS} from "../../utils/ui";
 import {getComparator, stableSort} from "../../utils/sort"
 import Link from "@material-ui/core/Link";
 
+export const headCells = [
+    {id: 'type', numeric: false, disablePadding: false, label: 'Type'},
+    {id: 'start_date', numeric: false, disablePadding: false, label: 'Date'},
+    {id: 'name', numeric: false, disablePadding: false, label: 'Name'},
+    {id: 'distance', numeric: true, disablePadding: false, label: 'Distance (km)'},
+    {id: 'total_elevation_gain', numeric: true, disablePadding: false, label: 'Elevation (m)'},
+    {id: 'pace', numeric: true, disablePadding: false, label: 'Pace (mins/km)'},
+    {id: 'moving_time', numeric: true, disablePadding: false, label: 'Move Time'},
+];
+
 export default function SearchResultTableComponent() {
     let activities = useSelector(selectActivities);
     const tableState = useSelector(selectTableState);
@@ -41,17 +51,6 @@ export default function SearchResultTableComponent() {
     const rowsPerPage = tableState.pagination.rowsPerPage;
     const page = tableState.pagination.page;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, activities.length - page * rowsPerPage);
-
-
-    const headCells = [
-        {id: 'type', numeric: false, disablePadding: false, label: 'Type'},
-        {id: 'start_date', numeric: false, disablePadding: false, label: 'Date'},
-        {id: 'name', numeric: false, disablePadding: false, label: 'Name'},
-        {id: 'distance', numeric: true, disablePadding: false, label: 'Distance (km)'},
-        {id: 'total_elevation_gain', numeric: true, disablePadding: false, label: 'Elevation (m)'},
-        {id: 'pace', numeric: true, disablePadding: false, label: 'Pace (mins/km)'},
-        {id: 'moving_time', numeric: true, disablePadding: false, label: 'Move Time'},
-    ];
 
     activities = activities.map((row, index) => ({
         ...row,

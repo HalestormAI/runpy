@@ -1,4 +1,6 @@
-const pad = n => n.toString().padStart(2, "0");
+import config from "../app/config/config.json";
+
+export const pad = n => n.toString().padStart(2, "0");
 
 export function secondsToHMS(seconds) {
     if (seconds < 0) {
@@ -30,4 +32,8 @@ export function speedToPaceMS(speed) {
 
 export function distanceFormat(distance) {
     return (distance / 1000).toFixed(2);
+}
+
+export function dateFormat(dateStr) {
+    return new Date(dateStr).toLocaleDateString(config.locale);
 }

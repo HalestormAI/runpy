@@ -19,7 +19,7 @@ export default function DistanceSearchFields(props) {
 
     const isValid = v => {
         v = Number(v);
-        return !isNaN(v) && v > 0;
+        return !isNaN(v) && v >= 0;
     };
 
     const [validState, setValidState] = React.useState({low: true, high: true});

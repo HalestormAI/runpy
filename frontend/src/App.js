@@ -1,22 +1,22 @@
 import React from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import './App.css';
-import Navbar from "./components/ui/nav";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import {TabContainer} from "./components/ui/tabs";
-import {useDispatch, useSelector} from "react-redux";
 import {selectDarkMode, selectDmMediaQueryState, updateMediaQueryState} from "./components/ui/themeSlice";
+import {TabContainer} from "./components/ui/tabs";
+import Navbar from "./components/ui/nav";
+import './App.css';
 
 
 function App() {
     const prefersDarkMode = useSelector(selectDarkMode);
-    const mqDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const dispatch = useDispatch();
-
     const currentMediaQueryResult = useSelector(selectDmMediaQueryState);
+    const dispatch = useDispatch();
+    const mqDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
     if (currentMediaQueryResult !== mqDarkMode) {
         dispatch(updateMediaQueryState(mqDarkMode));
     }

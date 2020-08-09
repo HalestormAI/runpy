@@ -1,15 +1,23 @@
 import {createSlice} from "@reduxjs/toolkit";
 
+const validFormTypes = ["distance"];
+
+export function isValidFormType(formType) {
+    return validFormTypes.indexOf(formType) !== -1;
+}
+
+
+export const initialState = {
+    type: "distance",
+    values: {
+        low: "",
+        high: ""
+    }
+};
 
 export const slice = createSlice({
     name: 'searchData',
-    initialState: {
-        type: "distance",
-        values: {
-            low: "",
-            high: ""
-        }
-    },
+    initialState,
     reducers: {
         updateLow: (state, action) => {
             state.values.low = action.payload
@@ -18,7 +26,7 @@ export const slice = createSlice({
             state.values.high = action.payload
         },
         setType: (state, action) => {
-            if (action.payload !== "distance") {
+            if (!isValidFormType(action.payload)) {
                 throw Error("Only distance search is implemented so far..")
             }
         }

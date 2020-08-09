@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`the result plot component no activities should render 1`] = `
+<PlotlyComponent
+  data={
+    Array [
+      Object {
+        "mode": "markers",
+        "text": Array [],
+        "transforms": Array [
+          Object {
+            "groups": Array [],
+            "type": "groupby",
+          },
+        ],
+        "type": "scatter",
+        "x": Array [],
+        "y": Array [],
+      },
+    ]
+  }
+  debug={false}
+  layout={
+    Object {
+      "autosize": true,
+      "font": Object {
+        "color": "rgba(0, 0, 0, 0.87)",
+      },
+      "paper_bgcolor": "#fff",
+      "plot_bgcolor": "#fff",
+      "responsize": true,
+      "title": "Pace (mins/km) over time 0.00km ... 0.00km",
+      "xaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%Y-%m-%d",
+        "zerolinecolor": "#fafafa",
+      },
+      "yaxis": Object {
+        "gridcolor": "#fafafa",
+        "linecolor": "#fafafa",
+        "tickformat": "%M:%S",
+        "zerolinecolor": "#fafafa",
+      },
+    }
+  }
+  onInitialized={[Function]}
+  onUpdate={[Function]}
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+  useResizeHandler={true}
+/>
+`;
