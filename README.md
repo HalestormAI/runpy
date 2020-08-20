@@ -12,3 +12,23 @@ This is currently set up as two main components:
 The whole application is backed by a MongoDB database, which caches a bunch of data from the Strava API. Aggregations are then performed over the data to produce the visulisations.
 
 There's a [Trello Board](https://trello.com/b/4yFRn4aS/runpy) for the project, which outlines some of the stuff still TODO.
+
+
+## Some screenshots:
+
+
+The frontpage showing stats evolving over time (binned data by week/month):
+
+![Frontpage - stats evolving over time](readme-content/temporal-stats-frontpage.png/?raw=true "Frontpage - stats evolving over time")
+
+Temporal stats (raw data):
+
+![Temporal stats with raw data](readme-content/raw-pace.png/?raw=true "Temporal stats with raw data")
+
+Moving average with trend-line:
+
+![Moving average with trend-line](readme-content/weekly-distance-with-trend.png/?raw=true "Moving average with trend-line")
+
+Heatmap of pace/frequency based on binned location:
+
+![Pace/location heatmap](readme-content/heatmap.png/?raw=true "location heatmap")
