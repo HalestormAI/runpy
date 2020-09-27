@@ -1,8 +1,5 @@
 import datetime
 from enum import Enum
-import numpy as np
-import pandas as pd
-from scipy import stats
 
 from backend.core import mongo
 
