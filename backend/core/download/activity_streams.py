@@ -1,4 +1,4 @@
-import progressbar
+import tqdm
 from swagger_client.rest import ApiException
 
 from backend.core import mongo
@@ -54,7 +54,7 @@ class ActivityStreamDownloader(AbstractDownloader):
         self.progress.start()
         downloaded_streams = []
         try:
-            for a in progressbar.progressbar(stream_ids):
+            for a in tqdm.tqdm(stream_ids):
                 self.progress.log(f"Downloading stream for activity {a['id']}")
                 try:
                     streams_data = self.client.get_activity_streams(a['id'], self.athlete_id)

@@ -1,7 +1,7 @@
 import logging
 
 import maya
-import progressbar
+import tqdm
 
 from .downloader import (
     AbstractDownloader,
@@ -43,7 +43,7 @@ class ActivityDownloader(AbstractDownloader):
         # TODO: What about updating after edits?
         downloaded_activities = []
         try:
-            for a in progressbar.progressbar(activity_ids):
+            for a in tqdm.tqdm(activity_ids):
                 self.progress.log(f"Downloading activity {a.id}")
                 self.progress.log(f"Storing activity {a.id} in database")
                 activity = self.client.get_activity_by_id(a.id)

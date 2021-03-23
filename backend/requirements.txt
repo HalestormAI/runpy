@@ -1,4 +1,4 @@
-progressbar
+tqdm
 flask
 flask-restful
 flask-cors
@@ -6,4 +6,4 @@ pandas
 maya
 pymongo
 scipy
--e git://@github.com:HalestormAI/stravaio.git#egg=stravaio
+-e git+https://github.com/HalestormAI/stravaio.git#egg=stravaio
