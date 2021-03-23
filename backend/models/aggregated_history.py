@@ -36,7 +36,7 @@ def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None,
             '$group': {
                 '_id': {
                     'wk': {'$isoWeek': '$dt'},
-                    'yr': {'$year': '$dt'}
+                    'yr': {'$isoWeekYear': '$dt'}
                 },
                 'runs': {
                     '$push': {
