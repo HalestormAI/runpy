@@ -6,7 +6,7 @@ transforms = [
 
 
 def register_transforms():
-    distances = (5000, 10000, 160000, 21098, 42195)
+    distances = (5000, 10000, 16000, 21098, 42195)
     # Register 5km, 10km, 10mile, HM and Marathon distances
     for d in distances:
         distance_record_transform.register(d)

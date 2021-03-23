@@ -97,8 +97,10 @@ class AbstractDownloader(StravaConnectedObject):
     def download(self):
         raise NotImplementedError("Concrete downloader implementations should overload `download`")
 
-    def apply_transforms(self, model):
-        tforms = get_transforms(self.__class__)
+    def apply_transforms(self, model, cls=None):
+        if cls is None:
+            cls = model.__class__
+        tforms = get_transforms(cls)
         for t in tforms:
             m = t.apply(model)
             if m is not None:

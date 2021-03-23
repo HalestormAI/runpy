@@ -59,7 +59,7 @@ class ActivityStreamDownloader(AbstractDownloader):
                 try:
                     streams_data = self.client.get_activity_streams(a['id'], self.athlete_id)
                     stream_model = ActivityStreamModel.doc_from_strava(a['id'], streams_data)
-                    stream_model = self.apply_transforms(stream_model)
+                    stream_model = self.apply_transforms(stream_model, ActivityStreamModel)
                     downloaded_streams.append({**stream_model})
                     download_buffer.add(stream_model)
                     self.progress.next()
