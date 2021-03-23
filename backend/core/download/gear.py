@@ -1,5 +1,5 @@
-import progressbar
 import stravaio
+import tqdm
 
 from .downloader import (
     AbstractDownloader,
@@ -35,7 +35,7 @@ class GearDownloader(AbstractDownloader):
         self.progress.set_num(len(ids_to_download))
         self.progress.start()
         try:
-            for g in progressbar.progressbar(ids_to_download):
+            for g in tqdm.tqdm(ids_to_download):
                 api_response = self.api.get_gear_by_id(g)
                 d = api_response.to_dict()
                 d = stravaio.convert_datetime_to_iso8601(d)

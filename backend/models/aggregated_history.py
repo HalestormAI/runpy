@@ -1,8 +1,5 @@
 import datetime
 from enum import Enum
-import numpy as np
-import pandas as pd
-from scipy import stats
 
 from backend.core import mongo
 
@@ -39,7 +36,7 @@ def aggregated_weekly_history(search_type=SearchTypes.DISTANCE, start_date=None,
             '$group': {
                 '_id': {
                     'wk': {'$isoWeek': '$dt'},
-                    'yr': {'$year': '$dt'}
+                    'yr': {'$isoWeekYear': '$dt'}
                 },
                 'runs': {
                     '$push': {

@@ -5,6 +5,8 @@ from scipy import stats
 from backend.core import mongo
 
 
+# TODO: This should probably become a transform
+
 def geo_speed_for_bounds(north_east, south_west, granularity=3, intersect=False):
     c_e, c_n = north_east
     c_w, c_s = south_west

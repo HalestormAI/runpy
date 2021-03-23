@@ -1,34 +1,32 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
-import {loadResult, selectResult, selectWeekDetails, updateSelectedWeek} from './weeklyAggSlice'
+import {loadResult, selectResult, selectWeekDetails, updateSelectedWeek} from './distanceRecordSlice'
 import Plot from "react-plotly.js";
 import {useTheme} from "@material-ui/core/styles";
 import {defaultPlotLayout, initialPlotState} from "../../../../utils/plot";
+import {secondsToHMS} from "../../../../utils/ui";
 import LoadingSpinner from "../../loadingSpinner";
-import WeekDetails from "../weekDetails"
 
-const ONE_WEEK = 60*60*24*7*1000;
 
-function rollingAverage(data, inputDate, windowSize=5) {
+const ONE_WEEK = 60 * 60 * 24 * 7 * 1000;
+
+// Monthly average
+function rollingAverage(data, inputDate, windowSize = 5) {
     const dateIds = []
 
     if (windowSize % 2 !== 1) {
         windowSize += 1;
     }
 
-    for (let i = -(windowSize-1)/2; i <= (windowSize-1)/2; i++) {
+    for (let i = -(windowSize - 1) / 2; i <= (windowSize - 1) / 2; i++) {
         const dt = new Date(new Date(inputDate) - ONE_WEEK * i);
-        dateIds.push(dt.toISOString().split("T")[0])
+        dateIds.push(dt.toISOString().split("T")[0].slice(0, -3))
     }
 
-    // Missing dates essentially contribute 0, which is correct for all but the edge weeks
-    // which could do with some special handling...
-    return data
-        .filter(x => dateIds.includes(x.date))
-        .reduce((accl, item) => accl + item.count, 0) / windowSize;
+    const x = data.filter(x => dateIds.includes(x.date.split("T")[0].slice(0, -3)));
+    return x.reduce((accl, item) => accl + item.record, 0) / x.length;
 }
-
 
 // TODO: Extract similarities between plots
 function TemporalPlot(props) {
@@ -38,7 +36,7 @@ function TemporalPlot(props) {
     const layoutMemo = React.useMemo(
         () => {
             const layout = defaultPlotLayout(theme, title);
-            layout.yaxis.tickformat = yaxis;
+            layout.yaxis.tickformat = "%H:%M:%S";
             layout.xaxis.tickformat = "%Y-%m-%d";
             return layout;
         }, [theme, title, yaxis]
@@ -57,10 +55,14 @@ function TemporalPlot(props) {
         setState(state);
     };
 
-    const x_data = data.map(x => x["date"])
-    const y_data = data.map(x => x["count"] / 1000)
+    const x_data = data.map(x => x.date)
+    const y_data = data
+        .map(x => x["record"])
+        .map(a => "2020-01-01 " + secondsToHMS(a));
 
-    const averages = data.map(x => rollingAverage(data, x.date, 9)/1000);
+    const averages = data
+        .map(x => rollingAverage(data, x.date.split("T")[0].slice(0, -3), 5))
+        .map(a => "2020-01-01 " + secondsToHMS(a));
 
     const traces = [{
         x: x_data,
@@ -72,15 +74,15 @@ function TemporalPlot(props) {
         type: "scatter",
         connectgaps: false
     },
-    {
-        x: x_data,
-        y: averages,
-        line: {color: secondaryColor},
-        mode: 'lines',
-        name: "RollingAverage",
-        type: "scatter",
-        connectgaps: false
-    }]
+        {
+            x: x_data,
+            y: averages,
+            line: {color: secondaryColor},
+            mode: 'lines',
+            name: "RollingAverage",
+            type: "scatter",
+            connectgaps: false
+        }]
 
     return (
         <div style={{width: '100%'}}>
@@ -97,16 +99,17 @@ function TemporalPlot(props) {
     );
 }
 
-export default function WeeklyAggregationStatsPage(props) {
+
+export default function DistanceRecordPage(props) {
+    const {distance} = props;
     const stats = useSelector(selectResult);
     const selectedWeek = useSelector(selectWeekDetails)
     const dispatch = useDispatch();
-
-    const hasStats = stats !== null && stats.constructor === Array && stats.length !== 0;
+    const hasStats = stats !== null && stats.constructor === Object && stats[distance] !== undefined && stats[distance].length !== 0;
 
     useEffect(() => {
         if (!hasStats) {
-            dispatch(loadResult())
+            dispatch(loadResult(distance))
         }
     }, [hasStats, dispatch]);
 
@@ -117,22 +120,19 @@ export default function WeeklyAggregationStatsPage(props) {
         dispatch(updateSelectedWeek(week));
     };
 
+    const distanceKm = Math.round(distance / 1000);
+    const title = `Distance Records: ${distanceKm}km`;
     return (
         <Grid container>
             {hasStats ? (
                     <React.Fragment>
                         <Grid item xs={12}>
                             <TemporalPlot
-                                data={stats}
-                                title="Weekly Distance"
-                                clickHandler={selectWeek}
+                                data={stats[distance]}
+                                title={title}
+                                // clickHandler={selectWeek}
                             />
                         </Grid>
-                        {selectedWeek !== null ? (
-                                <Grid item xs={12}>
-                                    <WeekDetails data={stats} week={selectedWeek}/>
-                                </Grid>) :
-                            <p>Click a data-point to see run information for that week.</p>}
                     </React.Fragment>
                 ) :
                 <Grid item xs={12}>

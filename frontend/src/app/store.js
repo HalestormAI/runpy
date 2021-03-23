@@ -7,6 +7,7 @@ import resultTableReducer from '../components/resultTable/resultTableSlice';
 import temporalStatsReducer from '../components/ui/pages/TemporalStats/temporalStatsSlice'
 import mapApiReducer from '../components/ui/pages/MapVis/mapSlice'
 import weeklyAggReducer from '../components/ui/pages/WeeklyAggSearch/weeklyAggSlice'
+import distanceRecordReducer from '../components/ui/pages/DistanceRecords/distanceRecordSlice'
 
 export default configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export default configureStore({
     resultTable: resultTableReducer,
     statsApi: temporalStatsReducer,
     mapsApi: mapApiReducer,
-    weeklyAggApi: weeklyAggReducer
+    weeklyAggApi: weeklyAggReducer,
+    distanceRecordApi: distanceRecordReducer,
   },
 });

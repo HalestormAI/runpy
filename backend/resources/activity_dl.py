@@ -94,7 +94,7 @@ class SingleStreamFetch(Resource):
             return jsonify({
                 "status": "done",
                 "message": "Done",
-                "streams": streams
+                "streams": streams["data"]
             })
         except AuthenticationError as err:
             return {

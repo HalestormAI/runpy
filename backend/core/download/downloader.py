@@ -1,8 +1,11 @@
 import logging
+
 from ..config import Config
 from ..connection import StravaConnectedObject
+from ...transforms.activity_transform import get_transforms
 
 logger = logging.getLogger("runpy.downloader")
+
 
 class DownloaderFactory():
     downloaders = {}
@@ -93,6 +96,16 @@ class AbstractDownloader(StravaConnectedObject):
 
     def download(self):
         raise NotImplementedError("Concrete downloader implementations should overload `download`")
+
+    def apply_transforms(self, model, cls=None):
+        if cls is None:
+            cls = model.__class__
+        tforms = get_transforms(cls)
+        for t in tforms:
+            m = t.apply(model)
+            if m is not None:
+                model = m
+        return model
 
     def clear(self):
         raise NotImplementedError("Concrete downloader implementations should overload `clear`")

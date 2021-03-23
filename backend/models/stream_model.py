@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from pymongo import ReplaceOne
+
 from backend.core import mongo
 from backend.core.connection import StravaConnectedObject
 
@@ -21,13 +23,24 @@ class ActivityStreamModel(StravaConnectedObject):
         # See if we've already got it, if so return from the DB
         existing_streams = db.streams.find_one({"activity_id": activity_id})
         if existing_streams is not None:
-            return existing_streams["data"]
+            return existing_streams
 
         streams = self.client.get_activity_streams(activity_id, self.athlete_id)
         stream_doc = ActivityStreamModel.doc_from_strava(activity_id, streams)
         db.streams.insert_one(stream_doc)
 
-        return stream_doc["data"]
+        return stream_doc
+
+    def update_many(self, activities):
+        if self.client is None:
+            self.connect()
+
+        ops = [ReplaceOne({"activity_id": a}, d, upsert=False) for a, d in activities.items()]
+        db = mongo.factory.default_client()
+        result = db.streams.bulk_write(ops)
+
+        if result.matched_count != len(activities):
+            raise RuntimeError(f"Failed to update all documents ({result['nMatched']}) / {len(activities)}")
 
     @staticmethod
     def doc_from_strava(activity_id, strava_data):
