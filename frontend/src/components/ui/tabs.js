@@ -9,6 +9,8 @@ import DistanceSearchPage from "./pages/DistanceSearch";
 import TemporalStatsPage from "./pages/TemporalStats";
 import MapVisPage from "./pages/MapVis";
 import WeeklyAggregationStatsPage from "./pages/WeeklyAggSearch";
+import DistanceRecordPage from "./pages/DistanceRecords";
+import Grid from "@material-ui/core/Grid";
 
 export function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -46,13 +48,16 @@ export function TabContainer(props) {
         setTabId(newValue);
     };
 
+    const distances = [5000, 10000, 16000, 21098];
+
     return (
         <React.Fragment>
             <Tabs value={tabId} onChange={handleChange} aria-label="simple tabs example">
                 <Tab label="Temporal" {...a11yProps(0)} />
                 <Tab label="Weekly" {...a11yProps(1)} />
                 <Tab label="Distance Search" {...a11yProps(2)} />
-                <Tab label="Map" {...a11yProps(3)} />
+                <Tab label="Distance Records" {...a11yProps(3)} />
+                <Tab label="Map" {...a11yProps(4)} />
             </Tabs>
             <TabPanel value={tabId} index={0}>
                 <TemporalStatsPage/>
@@ -64,6 +69,16 @@ export function TabContainer(props) {
                 <DistanceSearchPage/>
             </TabPanel>
             <TabPanel value={tabId} index={3}>
+                <Grid container spacing={3}>
+                    {distances.map(d => (
+                        <Grid item xs={6}>
+                            <DistanceRecordPage distance={d}/>
+                        </Grid>))}
+                </Grid>
+
+                {/*<DistanceRecordPage distance={42195} />*/}
+            </TabPanel>
+            <TabPanel value={tabId} index={4}>
                 <MapVisPage/>
             </TabPanel>
         </React.Fragment>
